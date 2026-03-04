@@ -23,9 +23,22 @@ const Index = () => {
             <button className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
               Explore
             </button>
-            <button className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:opacity-90 transition-opacity">
-              Sign In
-            </button>
+            {user ? (
+              <button
+                onClick={() => signOut()}
+                className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-secondary text-secondary-foreground text-xs sm:text-sm font-semibold hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                Sign Out
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:opacity-90 transition-opacity"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </nav>
