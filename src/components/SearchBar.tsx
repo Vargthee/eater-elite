@@ -28,7 +28,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
         <Search className="w-5 h-5 text-muted-foreground shrink-0" />
         <input
           type="text"
-          placeholder="Search by name, location, or specialty..."
+          placeholder="Search eater name, city, or specialty..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
@@ -37,7 +37,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
         />
         <div className="hidden sm:flex items-center gap-1.5 text-muted-foreground text-sm">
           <MapPin className="w-4 h-4" />
-          <span>All Cities</span>
+          <span>All Naija</span>
         </div>
       </div>
     </motion.form>
