@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const nigerianCities = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Benin City", "Enugu"];
 
 const Index = () => {
+  const { user, signOut } = useAuth();
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
