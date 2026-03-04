@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
-import { Flame, Shield, TrendingUp, MapPin, Users } from "lucide-react";
+import { Flame, Shield, TrendingUp, MapPin, Users, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import ProfileCard from "@/components/ProfileCard";
 import { dummyProfiles } from "@/data/dummyProfiles";
+import { useAuth } from "@/contexts/AuthContext";
 
 const nigerianCities = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Benin City", "Enugu"];
 
