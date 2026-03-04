@@ -1,0 +1,43 @@
+import type { ProfileData } from "@/components/ProfileCard";
+
+export const dummyProfiles: ProfileData[] = [
+  {
+    id: "1",
+    displayName: "VelvetTongue",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+    bio: "The connoisseur's choice. Known for impeccable technique and an unforgettable experience every single time.",
+    rating: 4.9,
+    reviewCount: 127,
+    vouchCount: 89,
+    specialties: ["Precision", "Slow Burn", "Elite"],
+    verified: true,
+    city: "Los Angeles",
+    metrics: { technique: 4.9, stamina: 4.7, vibe: 5.0 },
+  },
+  {
+    id: "2",
+    displayName: "MidnightFeast",
+    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
+    bio: "Energy that doesn't quit. Marathon sessions are the specialty — always leaves you wanting more.",
+    rating: 4.7,
+    reviewCount: 93,
+    vouchCount: 64,
+    specialties: ["Endurance", "Passionate", "Top Tier"],
+    verified: true,
+    city: "Miami",
+    metrics: { technique: 4.5, stamina: 5.0, vibe: 4.6 },
+  },
+  {
+    id: "3",
+    displayName: "SilkAndSpice",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face",
+    bio: "Where sophistication meets raw talent. A curated experience tailored to your deepest preferences.",
+    rating: 4.8,
+    reviewCount: 76,
+    vouchCount: 52,
+    specialties: ["Bespoke", "Sensual", "Premium"],
+    verified: false,
+    city: "New York",
+    metrics: { technique: 4.8, stamina: 4.4, vibe: 4.9 },
+  },
+];
