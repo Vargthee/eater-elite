@@ -14,13 +14,121 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string
+          display_name: string
+          id: string
+          is_anonymous: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_anonymous?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_anonymous?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          is_anonymous: boolean
+          profile_id: string
+          reviewer_id: string
+          stamina_rating: number
+          technique_rating: number
+          vibe_rating: number
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          profile_id: string
+          reviewer_id: string
+          stamina_rating: number
+          technique_rating: number
+          vibe_rating: number
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean
+          profile_id?: string
+          reviewer_id?: string
+          stamina_rating?: number
+          technique_rating?: number
+          vibe_rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vouches: {
+        Row: {
+          created_at: string
+          id: string
+          profile_id: string
+          voucher_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_id: string
+          voucher_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_id?: string
+          voucher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vouches_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_random_display_name: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
