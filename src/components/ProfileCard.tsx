@@ -1,5 +1,6 @@
 import { BadgeCheck, Heart, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import StarRating from "./StarRating";
 
 export interface ProfileData {
@@ -102,9 +103,9 @@ const ProfileCard = ({ profile, rank, index = 0 }: ProfileCardProps) => {
             {profile.vouchCount} vouches
           </span>
         </div>
-        <button className="text-sm font-medium text-primary hover:underline underline-offset-2 transition-colors">
+        <Link to={`/profile/${profile.id}`} className="text-sm font-medium text-primary hover:underline underline-offset-2 transition-colors">
           View Profile
-        </button>
+        </Link>
       </div>
     </motion.div>
   );
