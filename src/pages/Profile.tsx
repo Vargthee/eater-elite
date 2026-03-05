@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Flame, ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2 } from "lucide-react";
@@ -39,14 +39,15 @@ const Profile = () => {
   const [hasVouched, setHasVouched] = useState(false);
   const [loading, setLoading] = useState(true);
   const [vouchLoading, setVouchLoading] = useState(false);
+  const [reviewKey, setReviewKey] = useState(0);
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     if (!id) return;
     const { data } = await supabase.from("profiles").select("*").eq("id", id).single();
     if (data) setProfile(data);
-  };
+  }, [id]);
 
-  const fetchMetrics = async () => {
+  const fetchMetrics = useCallback(async () => {
     if (!id) return;
     const { data: reviews } = await supabase.from("reviews").select("technique_rating, stamina_rating, vibe_rating").eq("profile_id", id);
     if (reviews && reviews.length > 0) {
@@ -55,9 +56,9 @@ const Profile = () => {
       const v = reviews.reduce((a, r) => a + r.vibe_rating, 0) / reviews.length;
       setMetrics({ technique: t, stamina: s, vibe: v, overall: (t + s + v) / 3, reviewCount: reviews.length });
     }
-  };
+  }, [id]);
 
-  const fetchVouches = async () => {
+  const fetchVouches = useCallback(async () => {
     if (!id) return;
     const { count } = await supabase.from("vouches").select("*", { count: "exact", head: true }).eq("profile_id", id);
     setVouchCount(count ?? 0);
@@ -65,14 +66,14 @@ const Profile = () => {
       const { data } = await supabase.from("vouches").select("id").eq("profile_id", id).eq("voucher_id", user.id).maybeSingle();
       setHasVouched(!!data);
     }
-  };
+  }, [id, user]);
 
   useEffect(() => {
     setLoading(true);
     Promise.all([fetchProfile(), fetchMetrics(), fetchVouches()]).finally(() => setLoading(false));
-  }, [id, user]);
+  }, [fetchProfile, fetchMetrics, fetchVouches]);
 
-  const handleVouch = async () => {
+  const handleVouch = useCallback(async () => {
     if (!user || !id) {
       toast({ title: "Sign in first", description: "You need an account to vouch for someone." });
       return;
@@ -96,7 +97,12 @@ const Profile = () => {
       toast({ title: "Error", description: "Something went wrong.", variant: "destructive" });
     }
     setVouchLoading(false);
-  };
+  }, [user, id, profile?.user_id, hasVouched, toast]);
+
+  const handleReviewSubmitted = useCallback(() => {
+    fetchMetrics();
+    setReviewKey((k) => k + 1);
+  }, [fetchMetrics]);
 
   if (loading) {
     return (
@@ -108,7 +114,7 @@ const Profile = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-4">
         <p className="text-muted-foreground text-lg">Profile not found</p>
         <Link to="/" className="text-primary hover:underline">Go Home</Link>
       </div>
@@ -137,27 +143,32 @@ const Profile = () => {
         </div>
       </nav>
 
-      <div className="container max-w-3xl mx-auto pt-24 pb-20 px-4">
+      <div className="container max-w-3xl mx-auto pt-20 sm:pt-24 pb-20 px-4">
         {/* Profile header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass rounded-2xl p-6 sm:p-8"
+          className="glass rounded-2xl p-5 sm:p-8"
         >
-          <div className="flex flex-col sm:flex-row items-start gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-secondary overflow-hidden shrink-0">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-secondary overflow-hidden shrink-0">
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.display_name} className="w-full h-full object-cover" />
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.display_name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-2xl font-display font-bold text-muted-foreground">
+                <div className="w-full h-full flex items-center justify-center text-xl sm:text-2xl font-display font-bold text-muted-foreground">
                   {profile.display_name.charAt(0)}
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="font-display font-bold text-2xl sm:text-3xl">{profile.display_name}</h1>
-                {!profile.is_anonymous && <BadgeCheck className="w-6 h-6 text-primary" />}
+                <h1 className="font-display font-bold text-xl sm:text-3xl">{profile.display_name}</h1>
+                {!profile.is_anonymous && <BadgeCheck className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />}
               </div>
               {profile.city && (
                 <p className="flex items-center gap-1 text-muted-foreground text-sm mt-1">
@@ -165,10 +176,9 @@ const Profile = () => {
                 </p>
               )}
               {profile.bio && (
-                <p className="text-secondary-foreground text-sm mt-3 leading-relaxed">{profile.bio}</p>
+                <p className="text-secondary-foreground text-sm mt-2 sm:mt-3 leading-relaxed">{profile.bio}</p>
               )}
-
-              <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-4 mt-3 sm:mt-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <MessageSquare className="w-4 h-4" />
                   {metrics.reviewCount} reviews
@@ -181,12 +191,12 @@ const Profile = () => {
             </div>
 
             {/* Overall rating */}
-            <div className="flex flex-col items-center shrink-0 glass rounded-xl p-4 min-w-[100px]">
-              <span className="text-3xl font-display font-bold text-gradient">
+            <div className="flex flex-row sm:flex-col items-center gap-2 sm:gap-0 shrink-0 glass rounded-xl p-3 sm:p-4 sm:min-w-[100px] w-full sm:w-auto justify-center">
+              <span className="text-2xl sm:text-3xl font-display font-bold text-gradient">
                 {metrics.overall > 0 ? metrics.overall.toFixed(1) : "—"}
               </span>
               <StarRating rating={metrics.overall} size="sm" />
-              <span className="text-xs text-muted-foreground mt-1">overall</span>
+              <span className="text-xs text-muted-foreground sm:mt-1">overall</span>
             </div>
           </div>
         </motion.div>
@@ -196,10 +206,10 @@ const Profile = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="glass rounded-2xl p-6 mt-4"
+          className="glass rounded-2xl p-5 sm:p-6 mt-3 sm:mt-4"
         >
-          <h2 className="font-display font-semibold text-lg mb-4">Detailed Ratings</h2>
-          <div className="space-y-4">
+          <h2 className="font-display font-semibold text-base sm:text-lg mb-3 sm:mb-4">Detailed Ratings</h2>
+          <div className="space-y-3 sm:space-y-4">
             {metricEntries.map(([label, value]) => (
               <div key={label}>
                 <div className="flex items-center justify-between mb-1.5">
@@ -224,12 +234,12 @@ const Profile = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex gap-3 mt-4"
+          className="flex gap-3 mt-3 sm:mt-4"
         >
           <Button
             onClick={handleVouch}
             disabled={vouchLoading}
-            className={`flex-1 rounded-xl h-12 text-sm font-semibold gap-2 ${
+            className={`flex-1 rounded-xl h-11 sm:h-12 text-sm font-semibold gap-2 ${
               hasVouched
                 ? "bg-vouch text-vouch-foreground hover:bg-vouch/80"
                 : "bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
@@ -238,7 +248,7 @@ const Profile = () => {
             <Heart className={`w-4 h-4 ${hasVouched ? "fill-current" : ""}`} />
             {hasVouched ? "Vouched ✓" : "Vouch"}
           </Button>
-          <WriteReviewDialog profileId={profile.id} profileName={profile.display_name} onReviewSubmitted={() => { fetchMetrics(); }} />
+          <WriteReviewDialog profileId={profile.id} profileName={profile.display_name} onReviewSubmitted={handleReviewSubmitted} />
         </motion.div>
 
         {/* Review feed */}
@@ -246,10 +256,10 @@ const Profile = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-6"
+          className="mt-5 sm:mt-6"
         >
-          <h2 className="font-display font-semibold text-lg mb-4">Reviews</h2>
-          <ReviewFeed profileId={profile.id} />
+          <h2 className="font-display font-semibold text-base sm:text-lg mb-3 sm:mb-4">Reviews</h2>
+          <ReviewFeed key={reviewKey} profileId={profile.id} />
         </motion.div>
       </div>
     </div>
