@@ -1,15 +1,47 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, Shield, TrendingUp, MapPin, Users, LogOut } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Flame, Shield, TrendingUp, MapPin, Users, LogOut, Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import ProfileCard from "@/components/ProfileCard";
 import { dummyProfiles } from "@/data/dummyProfiles";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const nigerianCities = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Benin City", "Enugu"];
 
 const Index = () => {
-  const { user, signOut } = useAuth();
+  const { user, signInAnonymously } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [creating, setCreating] = useState(false);
+
+  const handleCreateProfile = async () => {
+    setCreating(true);
+    try {
+      let userId = user?.id;
+      if (!userId) {
+        await signInAnonymously();
+        const { data: { session } } = await supabase.auth.getSession();
+        userId = session?.user?.id;
+      }
+      if (!userId) throw new Error("Could not authenticate");
+      // Wait briefly for trigger to create profile
+      await new Promise((r) => setTimeout(r, 500));
+      const { data: profile } = await supabase.from("profiles").select("id").eq("user_id", userId).maybeSingle();
+      if (profile) {
+        navigate(`/profile/${profile.id}`);
+      } else {
+        toast({ title: "Error", description: "Profile not found. Try again.", variant: "destructive" });
+      }
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
+    setCreating(false);
+  };
+
+  const { signOut } = useAuth();
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
@@ -149,8 +181,13 @@ const Index = () => {
             <p className="text-muted-foreground text-sm sm:text-base mb-6 max-w-lg mx-auto">
               Create your anonymous profile, collect reviews, and climb the leaderboard. No real name needed — your reputation speaks for itself.
             </p>
-            <button className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity glow-primary">
-              Create Your Profile
+            <button
+              onClick={handleCreateProfile}
+              disabled={creating}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity glow-primary disabled:opacity-50"
+            >
+              {creating && <Loader2 className="w-4 h-4 animate-spin" />}
+              {user ? "View My Profile" : "Create Your Profile"}
             </button>
           </motion.div>
         </div>
