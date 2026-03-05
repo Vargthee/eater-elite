@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { motion } from "framer-motion";
 import { Flame, Shield, TrendingUp, MapPin, Users, LogOut, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,12 +12,12 @@ import { useToast } from "@/hooks/use-toast";
 const nigerianCities = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Benin City", "Enugu"];
 
 const Index = () => {
-  const { user, signInAnonymously } = useAuth();
+  const { user, signInAnonymously, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [creating, setCreating] = useState(false);
 
-  const handleCreateProfile = async () => {
+  const handleCreateProfile = useCallback(async () => {
     setCreating(true);
     try {
       let userId = user?.id;
@@ -27,7 +27,6 @@ const Index = () => {
         userId = session?.user?.id;
       }
       if (!userId) throw new Error("Could not authenticate");
-      // Wait briefly for trigger to create profile
       await new Promise((r) => setTimeout(r, 500));
       const { data: profile } = await supabase.from("profiles").select("id").eq("user_id", userId).maybeSingle();
       if (profile) {
@@ -39,9 +38,10 @@ const Index = () => {
       toast({ title: "Error", description: e.message, variant: "destructive" });
     }
     setCreating(false);
-  };
+  }, [user, signInAnonymously, navigate, toast]);
 
-  const { signOut } = useAuth();
+  const handleSignOut = useCallback(() => signOut(), [signOut]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
@@ -57,11 +57,11 @@ const Index = () => {
             </button>
             {user ? (
               <button
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-secondary text-secondary-foreground text-xs sm:text-sm font-semibold hover:bg-accent hover:text-accent-foreground transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                Sign Out
+                <span className="hidden sm:inline">Sign Out</span>
               </button>
             ) : (
               <Link
@@ -76,17 +76,17 @@ const Index = () => {
       </nav>
 
       {/* Hero */}
-      <section className="pt-24 sm:pt-32 pb-10 sm:pb-16 px-4">
+      <section className="pt-22 sm:pt-32 pb-8 sm:pb-16 px-4">
         <div className="container max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="font-display font-bold text-3xl sm:text-5xl md:text-6xl leading-tight mb-3 sm:mb-4">
+            <h1 className="font-display font-bold text-2xl sm:text-5xl md:text-6xl leading-tight mb-3 sm:mb-4">
               Find the <span className="text-gradient">Top-Rated</span> Eaters
             </h1>
-            <p className="text-muted-foreground text-base sm:text-xl max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+            <p className="text-muted-foreground text-sm sm:text-xl max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed">
               Anonymous reviews. Real ratings. Discover who dey <span className="text-primary font-medium">chop</span> well — rated on Technique, Stamina & Vibe. 🇳🇬
             </p>
           </motion.div>
@@ -101,7 +101,7 @@ const Index = () => {
 
           {/* City pills */}
           <motion.div
-            className="flex flex-wrap items-center justify-center gap-2 mt-6"
+            className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35, duration: 0.5 }}
@@ -109,7 +109,7 @@ const Index = () => {
             {nigerianCities.map((city) => (
               <button
                 key={city}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
               >
                 <MapPin className="w-3 h-3" />
                 {city}
@@ -119,21 +119,21 @@ const Index = () => {
 
           {/* Trust badges */}
           <motion.div
-            className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 text-xs sm:text-sm text-muted-foreground"
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6 sm:mt-8 text-[11px] sm:text-sm text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
             <span className="flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-vouch" />
+              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-vouch" />
               100% Anonymous
             </span>
             <span className="flex items-center gap-1.5">
-              <TrendingUp className="w-4 h-4 text-primary" />
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
               2,400+ Reviews
             </span>
             <span className="flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-primary" />
+              <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
               Naija Only 🇳🇬
             </span>
           </motion.div>
@@ -141,26 +141,26 @@ const Index = () => {
       </section>
 
       {/* Leaderboard */}
-      <section className="pb-20 px-4">
+      <section className="pb-16 sm:pb-20 px-4">
         <div className="container max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="flex items-center justify-between mb-6 sm:mb-8"
+            className="flex items-center justify-between mb-5 sm:mb-8"
           >
             <div>
-              <h2 className="font-display font-bold text-xl sm:text-3xl">
+              <h2 className="font-display font-bold text-lg sm:text-3xl">
                 🔥 Top Rated This Month
               </h2>
-              <p className="text-muted-foreground text-xs sm:text-sm mt-1">The highest-rated eaters across Naija</p>
+              <p className="text-muted-foreground text-[11px] sm:text-sm mt-0.5 sm:mt-1">The highest-rated eaters across Naija</p>
             </div>
             <button className="text-xs sm:text-sm text-primary hover:underline underline-offset-2 font-medium">
               View All →
             </button>
           </motion.div>
 
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {dummyProfiles.map((profile, i) => (
               <ProfileCard key={profile.id} profile={profile} rank={i + 1} index={i} />
             ))}
@@ -169,7 +169,7 @@ const Index = () => {
       </section>
 
       {/* CTA Banner */}
-      <section className="px-4 pb-16">
+      <section className="px-4 pb-12 sm:pb-16">
         <div className="container max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -177,14 +177,14 @@ const Index = () => {
             transition={{ delay: 0.6, duration: 0.5 }}
             className="glass rounded-2xl p-6 sm:p-10 text-center"
           >
-            <h3 className="font-display font-bold text-xl sm:text-2xl mb-2">You sabi chop? Get rated 🍽️</h3>
-            <p className="text-muted-foreground text-sm sm:text-base mb-6 max-w-lg mx-auto">
+            <h3 className="font-display font-bold text-lg sm:text-2xl mb-2">You sabi chop? Get rated 🍽️</h3>
+            <p className="text-muted-foreground text-sm sm:text-base mb-5 sm:mb-6 max-w-lg mx-auto">
               Create your anonymous profile, collect reviews, and climb the leaderboard. No real name needed — your reputation speaks for itself.
             </p>
             <button
               onClick={handleCreateProfile}
               disabled={creating}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity glow-primary disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity glow-primary disabled:opacity-50"
             >
               {creating && <Loader2 className="w-4 h-4 animate-spin" />}
               {user ? "View My Profile" : "Create Your Profile"}
@@ -194,8 +194,8 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-6 sm:py-8 px-4">
-        <div className="container max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-muted-foreground">
+      <footer className="border-t border-border py-5 sm:py-8 px-4">
+        <div className="container max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Flame className="w-4 h-4 text-primary" />
             <span className="font-display font-semibold text-foreground">RateEaters</span>
