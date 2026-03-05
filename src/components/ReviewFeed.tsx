@@ -1,0 +1,124 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
+import StarRating from "./StarRating";
+import { MessageSquare } from "lucide-react";
+
+interface Review {
+  id: string;
+  technique_rating: number;
+  stamina_rating: number;
+  vibe_rating: number;
+  comment: string | null;
+  created_at: string;
+  is_anonymous: boolean;
+  reviewer_name?: string;
+}
+
+const ReviewFeed = ({ profileId }: { profileId: string }) => {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("profile_id", profileId)
+        .order("created_at", { ascending: false });
+
+      if (data) {
+        // Fetch reviewer names for non-anonymous reviews
+        const enriched = await Promise.all(
+          data.map(async (r) => {
+            if (!r.is_anonymous) {
+              const { data: p } = await supabase.from("profiles").select("display_name").eq("user_id", r.reviewer_id).maybeSingle();
+              return { ...r, reviewer_name: p?.display_name };
+            }
+            return r;
+          })
+        );
+        setReviews(enriched);
+      }
+      setLoading(false);
+    };
+    fetch();
+  }, [profileId]);
+
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="glass rounded-xl p-5 animate-pulse h-28" />
+        ))}
+      </div>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <div className="glass rounded-xl p-8 text-center">
+        <MessageSquare className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+        <p className="text-muted-foreground text-sm">No reviews yet. Be the first!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {reviews.map((review, i) => {
+        const avg = (review.technique_rating + review.stamina_rating + review.vibe_rating) / 3;
+        return (
+          <motion.div
+            key={review.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            className="glass rounded-xl p-5"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-xs font-display font-bold text-muted-foreground">
+                  {review.is_anonymous ? "?" : (review.reviewer_name?.charAt(0) ?? "?")}
+                </div>
+                <div>
+                  <span className="text-sm font-medium">
+                    {review.is_anonymous ? "Anonymous" : (review.reviewer_name ?? "Anonymous")}
+                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(review.created_at).toLocaleDateString("en-NG", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <StarRating rating={avg} size="sm" />
+                <span className="text-sm font-semibold text-primary">{avg.toFixed(1)}</span>
+              </div>
+            </div>
+
+            {/* Mini metrics */}
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              {[
+                ["Technique", review.technique_rating],
+                ["Stamina", review.stamina_rating],
+                ["Vibe", review.vibe_rating],
+              ].map(([label, val]) => (
+                <div key={label as string} className="text-center">
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</div>
+                  <div className="text-xs font-semibold">{val}/5</div>
+                </div>
+              ))}
+            </div>
+
+            {review.comment && (
+              <p className="text-sm text-secondary-foreground leading-relaxed">{review.comment}</p>
+            )}
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default ReviewFeed;
