@@ -58,23 +58,24 @@ const WriteReviewDialog = ({ profileId, profileName, onReviewSubmitted }: Props)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex-1 rounded-xl h-12 text-sm font-semibold gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+        <Button className="flex-1 h-11 text-xs font-display font-bold uppercase tracking-wider gap-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-none">
           <MessageSquare className="w-4 h-4" />
-          Write Review
+          Review
         </Button>
       </DialogTrigger>
-      <DialogContent className="glass border-border sm:max-w-md">
+      <DialogContent className="border border-border bg-background sm:max-w-md rounded-none">
         <DialogHeader>
-          <DialogTitle className="font-display">Rate {profileName}</DialogTitle>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">New Review</p>
+          <DialogTitle className="font-display font-extrabold">Rate {profileName}</DialogTitle>
         </DialogHeader>
         <div className="space-y-5 pt-2">
           {[
-            { label: "Technique 🍴", value: technique, setter: setTechnique },
-            { label: "Stamina 💪", value: stamina, setter: setStamina },
-            { label: "Vibe ✨", value: vibe, setter: setVibe },
-          ].map(({ label, value, setter }) => (
+            { label: "Technique", emoji: "🍴", value: technique, setter: setTechnique },
+            { label: "Stamina", emoji: "💪", value: stamina, setter: setStamina },
+            { label: "Vibe", emoji: "✨", value: vibe, setter: setVibe },
+          ].map(({ label, emoji, value, setter }) => (
             <div key={label} className="flex items-center justify-between">
-              <span className="text-sm font-medium">{label}</span>
+              <span className="text-sm font-medium">{label} {emoji}</span>
               <StarRating rating={value} interactive onRate={setter} size="md" />
             </div>
           ))}
@@ -83,7 +84,7 @@ const WriteReviewDialog = ({ profileId, profileName, onReviewSubmitted }: Props)
             placeholder="Share your experience... (optional)"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="bg-secondary border-border resize-none h-24"
+            className="bg-transparent border-border resize-none h-24 rounded-none focus:border-primary/40"
           />
 
           <div className="flex items-center justify-between">
@@ -94,7 +95,7 @@ const WriteReviewDialog = ({ profileId, profileName, onReviewSubmitted }: Props)
           <Button
             onClick={handleSubmit}
             disabled={!canSubmit || submitting}
-            className="w-full rounded-xl h-11 font-semibold glow-primary"
+            className="w-full h-11 font-display font-bold text-xs uppercase tracking-wider rounded-none glow-primary"
           >
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Submit Review"}
           </Button>

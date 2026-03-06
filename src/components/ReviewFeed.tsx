@@ -29,7 +29,6 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
         .order("created_at", { ascending: false });
 
       if (data) {
-        // Fetch reviewer names for non-anonymous reviews
         const enriched = await Promise.all(
           data.map(async (r) => {
             if (!r.is_anonymous) {
@@ -50,7 +49,7 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="glass rounded-xl p-5 animate-pulse h-28" />
+          <div key={i} className="border border-border p-5 animate-pulse h-28" />
         ))}
       </div>
     );
@@ -58,9 +57,9 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
 
   if (reviews.length === 0) {
     return (
-      <div className="glass rounded-xl p-8 text-center">
-        <MessageSquare className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-        <p className="text-muted-foreground text-sm">No reviews yet. Be the first!</p>
+      <div className="border border-border p-8 text-center">
+        <MessageSquare className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+        <p className="text-muted-foreground text-sm">No reviews yet. Be the first.</p>
       </div>
     );
   }
@@ -75,25 +74,25 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="glass rounded-xl p-5"
+            className="border border-border p-5"
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-xs font-display font-bold text-muted-foreground">
+                <div className="w-8 h-8 bg-secondary flex items-center justify-center font-mono text-xs text-muted-foreground">
                   {review.is_anonymous ? "?" : (review.reviewer_name?.charAt(0) ?? "?")}
                 </div>
                 <div>
                   <span className="text-sm font-medium">
                     {review.is_anonymous ? "Anonymous" : (review.reviewer_name ?? "Anonymous")}
                   </span>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="font-mono text-[10px] text-muted-foreground">
                     {new Date(review.created_at).toLocaleDateString("en-NG", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
                 <StarRating rating={avg} size="sm" />
-                <span className="text-sm font-semibold text-primary">{avg.toFixed(1)}</span>
+                <span className="font-mono text-xs font-medium text-primary">{avg.toFixed(1)}</span>
               </div>
             </div>
 
@@ -105,14 +104,14 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
                 ["Vibe", review.vibe_rating],
               ].map(([label, val]) => (
                 <div key={label as string} className="text-center">
-                  <div className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</div>
-                  <div className="text-xs font-semibold">{val}/5</div>
+                  <div className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">{label}</div>
+                  <div className="text-xs font-medium">{val}/5</div>
                 </div>
               ))}
             </div>
 
             {review.comment && (
-              <p className="text-sm text-secondary-foreground leading-relaxed">{review.comment}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
             )}
           </motion.div>
         );
