@@ -8,6 +8,7 @@ import { dummyProfiles } from "@/data/dummyProfiles";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { filterProfiles } from "@/lib/utils";
 
 const nigerianCities = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Benin City", "Enugu"];
 
@@ -16,6 +17,10 @@ const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [creating, setCreating] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCity, setSelectedCity] = useState<string | undefined>();
+
+  const filteredProfiles = filterProfiles(dummyProfiles, searchQuery, selectedCity);
 
   const handleCreateProfile = useCallback(async () => {
     setCreating(true);
@@ -104,7 +109,7 @@ const Index = () => {
             transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-2xl"
           >
-            <SearchBar />
+            <SearchBar onSearch={setSearchQuery} />
           </motion.div>
 
           {/* City pills */}
@@ -117,7 +122,12 @@ const Index = () => {
             {nigerianCities.map((city) => (
               <button
                 key={city}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-border text-muted-foreground text-[11px] font-mono uppercase tracking-wider hover:border-primary hover:text-primary transition-colors"
+                onClick={() => setSelectedCity(selectedCity === city ? undefined : city)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 border text-[11px] font-mono uppercase tracking-wider transition-colors ${
+                  selectedCity === city
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+                }`}
               >
                 <MapPin className="w-3 h-3" />
                 {city}
@@ -161,22 +171,63 @@ const Index = () => {
             className="flex items-end justify-between mb-8 sm:mb-12"
           >
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-2">Leaderboard</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-2">
+                {searchQuery || selectedCity ? "Search Results" : "Leaderboard"}
+              </p>
               <h2 className="font-display font-extrabold text-xl sm:text-4xl leading-tight">
-                Top Rated<br className="hidden sm:block" /> This Month
+                {searchQuery || selectedCity ? (
+                  <>
+                    {filteredProfiles.length} {filteredProfiles.length === 1 ? "Match" : "Matches"} Found
+                  </>
+                ) : (
+                  <>
+                    Top Rated<br className="hidden sm:block" /> This Month
+                  </>
+                )}
               </h2>
             </div>
-            <button className="flex items-center gap-1 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors">
-              View All
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </button>
+            {(searchQuery || selectedCity) && (
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCity(undefined);
+                }}
+                className="flex items-center gap-1 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+              >
+                Clear Filters
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </motion.div>
 
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {dummyProfiles.map((profile, i) => (
-              <ProfileCard key={profile.id} profile={profile} rank={i + 1} index={i} />
-            ))}
-          </div>
+          {filteredProfiles.length > 0 ? (
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredProfiles.map((profile, i) => (
+                <ProfileCard key={profile.id} profile={profile} rank={i + 1} index={i} />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center justify-center py-20 text-center"
+            >
+              <p className="text-muted-foreground text-sm mb-4">No eaters found matching your search.</p>
+              <p className="text-xs text-muted-foreground mb-6">
+                Try adjusting your search terms or clearing the filters.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCity(undefined);
+                }}
+                className="px-4 py-2 border border-border text-foreground text-xs font-mono uppercase tracking-wider hover:border-primary hover:text-primary transition-colors"
+              >
+                Clear All Filters
+              </button>
+            </motion.div>
+          )}
         </div>
       </section>
 
