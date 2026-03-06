@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Flame, ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2 } from "lucide-react";
+import { Flame, ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import StarRating from "@/components/StarRating";
@@ -249,6 +249,14 @@ const Profile = () => {
             {hasVouched ? "Vouched ✓" : "Vouch"}
           </Button>
           <WriteReviewDialog profileId={profile.id} profileName={profile.display_name} onReviewSubmitted={handleReviewSubmitted} />
+          {user?.id === profile.user_id && (
+            <Link to="/edit-profile">
+              <Button variant="outline" className="rounded-xl h-11 sm:h-12 text-sm font-semibold gap-2">
+                <Pencil className="w-4 h-4" />
+                Edit
+              </Button>
+            </Link>
+          )}
         </motion.div>
 
         {/* Review feed */}
