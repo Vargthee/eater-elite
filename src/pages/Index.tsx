@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Shield, TrendingUp, MapPin, Users, LogOut, Loader2, ArrowUpRight } from "lucide-react";
+import { Shield, TrendingUp, MapPin, Users, LogOut, Loader as Loader2, ArrowUpRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import ProfileCard from "@/components/ProfileCard";
