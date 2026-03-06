@@ -1,6 +1,6 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Flame, Shield, TrendingUp, MapPin, Users, LogOut, Loader2 } from "lucide-react";
+import { Shield, TrendingUp, MapPin, Users, LogOut, Loader2, ArrowUpRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import ProfileCard from "@/components/ProfileCard";
@@ -43,32 +43,34 @@ const Index = () => {
   const handleSignOut = useCallback(() => signOut(), [signOut]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background noise">
       {/* Nav */}
-      <nav className="fixed top-0 inset-x-0 z-50 glass border-b border-border">
-        <div className="container flex items-center justify-between h-14 sm:h-16 px-4">
-          <div className="flex items-center gap-2">
-            <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-            <span className="font-display font-bold text-lg sm:text-xl text-gradient">RateEaters</span>
+      <nav className="fixed top-0 inset-x-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
+        <div className="container flex items-center justify-between h-14 px-4">
+          <div className="flex items-center gap-3">
+            <span className="font-display font-extrabold text-lg tracking-tight text-foreground">
+              RATE<span className="text-primary">EATERS</span>
+            </span>
+            <span className="tag hidden sm:inline-flex">BETA</span>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <button className="text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+          <div className="flex items-center gap-3">
+            <button className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
               Explore
             </button>
             {user ? (
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-secondary text-secondary-foreground text-xs sm:text-sm font-semibold hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Sign Out</span>
+                <span className="hidden sm:inline">Exit</span>
               </button>
             ) : (
               <Link
                 to="/auth"
-                className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:opacity-90 transition-opacity"
+                className="px-4 py-1.5 bg-primary text-primary-foreground text-xs font-display font-bold uppercase tracking-wider hover:opacity-90 transition-opacity"
               >
-                Sign In
+                Enter
               </Link>
             )}
           </div>
@@ -76,40 +78,46 @@ const Index = () => {
       </nav>
 
       {/* Hero */}
-      <section className="pt-22 sm:pt-32 pb-8 sm:pb-16 px-4">
-        <div className="container max-w-4xl mx-auto text-center">
+      <section className="pt-28 sm:pt-40 pb-10 sm:pb-20 px-4">
+        <div className="container max-w-5xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-3xl"
           >
-            <h1 className="font-display font-bold text-2xl sm:text-5xl md:text-6xl leading-tight mb-3 sm:mb-4">
-              Find the <span className="text-gradient">Top-Rated</span> Eaters
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary mb-4 sm:mb-6">
+              Anonymous Rating Platform — Naija Edition
+            </p>
+            <h1 className="font-display font-extrabold text-3xl sm:text-6xl md:text-7xl leading-[0.9] mb-4 sm:mb-6">
+              Discover who<br />
+              <span className="text-gradient">dey chop well</span>
             </h1>
-            <p className="text-muted-foreground text-sm sm:text-xl max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed">
-              Anonymous reviews. Real ratings. Discover who dey <span className="text-primary font-medium">chop</span> well — rated on Technique, Stamina & Vibe. 🇳🇬
+            <p className="text-muted-foreground text-sm sm:text-lg max-w-xl leading-relaxed mb-8 sm:mb-12">
+              Anonymous reviews. Real ratings. Technique, Stamina & Vibe — all scored. Your identity stays hidden. No wahala. 🇳🇬
             </p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-2xl"
           >
             <SearchBar />
           </motion.div>
 
           {/* City pills */}
           <motion.div
-            className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6"
+            className="flex flex-wrap items-center gap-2 mt-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.35, duration: 0.5 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
           >
             {nigerianCities.map((city) => (
               <button
                 key={city}
-                className="flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-border text-muted-foreground text-[11px] font-mono uppercase tracking-wider hover:border-primary hover:text-primary transition-colors"
               >
                 <MapPin className="w-3 h-3" />
                 {city}
@@ -117,50 +125,54 @@ const Index = () => {
             ))}
           </motion.div>
 
-          {/* Trust badges */}
+          {/* Trust signals */}
           <motion.div
-            className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6 sm:mt-8 text-[11px] sm:text-sm text-muted-foreground"
+            className="flex flex-wrap items-center gap-6 mt-8 sm:mt-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
           >
-            <span className="flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-vouch" />
-              100% Anonymous
-            </span>
-            <span className="flex items-center gap-1.5">
-              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-              2,400+ Reviews
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-              Naija Only 🇳🇬
-            </span>
+            {[
+              { icon: Shield, label: "100% Anonymous", color: "text-primary" },
+              { icon: TrendingUp, label: "2,400+ Reviews", color: "text-muted-foreground" },
+              { icon: Users, label: "Naija Only 🇳🇬", color: "text-muted-foreground" },
+            ].map(({ icon: Icon, label, color }) => (
+              <span key={label} className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                <Icon className={`w-4 h-4 ${color}`} />
+                {label}
+              </span>
+            ))}
           </motion.div>
         </div>
       </section>
 
+      {/* Divider */}
+      <div className="container max-w-5xl mx-auto px-4">
+        <div className="h-px bg-border" />
+      </div>
+
       {/* Leaderboard */}
-      <section className="pb-16 sm:pb-20 px-4">
+      <section className="py-12 sm:py-20 px-4">
         <div className="container max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="flex items-center justify-between mb-5 sm:mb-8"
+            className="flex items-end justify-between mb-8 sm:mb-12"
           >
             <div>
-              <h2 className="font-display font-bold text-lg sm:text-3xl">
-                🔥 Top Rated This Month
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-2">Leaderboard</p>
+              <h2 className="font-display font-extrabold text-xl sm:text-4xl leading-tight">
+                Top Rated<br className="hidden sm:block" /> This Month
               </h2>
-              <p className="text-muted-foreground text-[11px] sm:text-sm mt-0.5 sm:mt-1">The highest-rated eaters across Naija</p>
             </div>
-            <button className="text-xs sm:text-sm text-primary hover:underline underline-offset-2 font-medium">
-              View All →
+            <button className="flex items-center gap-1 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors">
+              View All
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
           </motion.div>
 
-          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {dummyProfiles.map((profile, i) => (
               <ProfileCard key={profile.id} profile={profile} rank={i + 1} index={i} />
             ))}
@@ -168,40 +180,47 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Banner */}
-      <section className="px-4 pb-12 sm:pb-16">
-        <div className="container max-w-4xl mx-auto">
+      {/* CTA */}
+      <section className="px-4 pb-16 sm:pb-24">
+        <div className="container max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-            className="glass rounded-2xl p-6 sm:p-10 text-center"
+            className="border border-border p-8 sm:p-14 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
           >
-            <h3 className="font-display font-bold text-lg sm:text-2xl mb-2">You sabi chop? Get rated 🍽️</h3>
-            <p className="text-muted-foreground text-sm sm:text-base mb-5 sm:mb-6 max-w-lg mx-auto">
-              Create your anonymous profile, collect reviews, and climb the leaderboard. No real name needed — your reputation speaks for itself.
-            </p>
+            <div className="max-w-md">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-3">Get Listed</p>
+              <h3 className="font-display font-extrabold text-xl sm:text-3xl leading-tight mb-2">
+                You sabi chop?<br />Get rated. 🍽️
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Create your anonymous profile, collect reviews, and climb the leaderboard. No real name needed.
+              </p>
+            </div>
             <button
               onClick={handleCreateProfile}
               disabled={creating}
-              className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity glow-primary disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-display font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity glow-primary disabled:opacity-50 shrink-0"
             >
               {creating && <Loader2 className="w-4 h-4 animate-spin" />}
-              {user ? "View My Profile" : "Create Your Profile"}
+              {user ? "View Profile" : "Create Profile"}
+              <ArrowUpRight className="w-4 h-4" />
             </button>
           </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-5 sm:py-8 px-4">
-        <div className="container max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+      <footer className="border-t border-border py-6 sm:py-8 px-4">
+        <div className="container max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono uppercase tracking-wider text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Flame className="w-4 h-4 text-primary" />
-            <span className="font-display font-semibold text-foreground">RateEaters</span>
-            <span className="text-xs">🇳🇬</span>
+            <span className="font-display font-extrabold text-sm text-foreground tracking-tight">
+              RATE<span className="text-primary">EATERS</span>
+            </span>
+            <span>🇳🇬</span>
           </div>
-          <p>Your reviews stay anonymous. Always. No wahala.</p>
+          <p className="normal-case tracking-normal text-[11px]">Your reviews stay anonymous. Always. No wahala.</p>
         </div>
       </footer>
     </div>

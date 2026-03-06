@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, UserCircle, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { UserCircle, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -48,35 +48,39 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 noise">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md"
       >
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Flame className="w-7 h-7 text-primary" />
-          <span className="font-display font-bold text-2xl text-gradient">RateEaters</span>
+        <div className="flex items-center justify-center gap-2 mb-10">
+          <span className="font-display font-extrabold text-2xl tracking-tight">
+            RATE<span className="text-primary">EATERS</span>
+          </span>
         </div>
 
         {/* Card */}
-        <div className="glass rounded-2xl p-6 sm:p-8">
-          <h2 className="font-display font-bold text-xl sm:text-2xl text-center mb-1">
-            {mode === "signin" ? "Welcome back" : "Create account"}
+        <div className="border border-border p-6 sm:p-8">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
+            {mode === "signin" ? "Welcome back" : "Join the movement"}
+          </p>
+          <h2 className="font-display font-extrabold text-xl sm:text-2xl mb-1">
+            {mode === "signin" ? "Sign In" : "Create Account"}
           </h2>
-          <p className="text-muted-foreground text-sm text-center mb-6">
+          <p className="text-muted-foreground text-sm mb-6">
             {mode === "signin"
               ? "Sign in to leave reviews and climb the board"
-              : "Join the movement — your identity stays private"}
+              : "Your identity stays private — always"}
           </p>
 
-          {/* Anonymous entry */}
+          {/* Anonymous */}
           <button
             onClick={handleAnonymous}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-border bg-secondary text-secondary-foreground font-semibold text-sm hover:bg-accent hover:text-accent-foreground transition-colors mb-4 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-3 border border-border text-foreground font-display font-bold text-xs uppercase tracking-wider hover:border-primary/30 transition-colors mb-4 disabled:opacity-50"
           >
             <UserCircle className="w-4 h-4" />
             Continue Anonymously
@@ -84,7 +88,7 @@ const Auth = () => {
 
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground">or use email</span>
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">or</span>
             <div className="flex-1 h-px bg-border" />
           </div>
 
@@ -93,11 +97,11 @@ const Auth = () => {
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="email"
-                placeholder="Email address"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full pl-10 pr-4 py-3 bg-transparent border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/40 transition-colors"
               />
             </div>
             <div className="relative">
@@ -109,7 +113,7 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full pl-10 pr-10 py-3 rounded-xl bg-secondary border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full pl-10 pr-10 py-3 bg-transparent border border-border text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/40 transition-colors"
               />
               <button
                 type="button"
@@ -123,7 +127,7 @@ const Auth = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity glow-primary disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground font-display font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-opacity glow-primary disabled:opacity-50"
             >
               {mode === "signin" ? "Sign In" : "Create Account"}
               <ArrowRight className="w-4 h-4" />
@@ -131,7 +135,7 @@ const Auth = () => {
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-5">
-            {mode === "signin" ? "No account yet?" : "Already have an account?"}{" "}
+            {mode === "signin" ? "No account?" : "Have an account?"}{" "}
             <button
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
               className="text-primary font-medium hover:underline underline-offset-2"
@@ -141,8 +145,8 @@ const Auth = () => {
           </p>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground mt-4">
-          Your identity stays anonymous. Always. No wahala. 🇳🇬
+        <p className="text-center font-mono text-[10px] uppercase tracking-wider text-muted-foreground mt-6">
+          Your identity stays anonymous. Always. 🇳🇬
         </p>
       </motion.div>
     </div>
