@@ -141,7 +141,7 @@ const owerriZones: HeatZone[] = [
   { id: "okigwe-rd", name: "Okigwe Road", borough: "Okigwe Road", cx: 58, cy: 60, intensity: 0.48, activeCount: 7, topRating: 4.1, label: "Emerging" },
 ];
 
-const uyo Zones: HeatZone[] = [
+const uyoZones: HeatZone[] = [
   { id: "ewet-housing", name: "Ewet Housing", borough: "Ewet Housing", cx: 50, cy: 42, intensity: 0.8, activeCount: 14, topRating: 4.6, label: "On fire 🔥" },
   { id: "aka", name: "Aka Road", borough: "Aka", cx: 45, cy: 50, intensity: 0.68, activeCount: 11, topRating: 4.4, label: "Very hot 🌶️" },
   { id: "shelter-afrique", name: "Shelter Afrique", borough: "Shelter Afrique", cx: 55, cy: 38, intensity: 0.6, activeCount: 10, topRating: 4.3, label: "Active" },
