@@ -274,7 +274,7 @@ const Profile = () => {
           className="mt-6"
         >
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-4">Reviews</p>
-          <ReviewFeed key={reviewKey} profileId={profile.id} />
+          <ReviewFeed key={reviewKey} profileId={profile.id} profileOwnerId={profile.user_id} />
         </motion.div>
       </div>
     </div>
