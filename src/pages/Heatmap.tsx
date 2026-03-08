@@ -14,7 +14,6 @@ const Heatmap = () => {
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
 
   const city = cityData[selectedCity];
-  const city = cityData[selectedCity];
   const boroughs = useMemo(() => getBoroughs(selectedCity), [selectedCity]);
   const stats = useMemo(() => getCityStats(selectedCity), [selectedCity]);
 
