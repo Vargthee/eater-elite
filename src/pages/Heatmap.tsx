@@ -133,9 +133,41 @@ const Heatmap = () => {
         </div>
       </motion.nav>
 
-      {/* Borough filters */}
+      {/* Stats bar + Borough filters */}
       <div className="fixed top-14 inset-x-0 z-40 border-b border-border bg-background/60 backdrop-blur-lg">
-        <div className="container px-4 py-2.5">
+        <div className="container px-4 py-2">
+          {/* Stats bar */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`stats-${selectedCity}`}
+              className="flex items-center gap-4 sm:gap-6 mb-2 pb-2 border-b border-border/50"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
+                  <span className="text-foreground font-bold">{stats.totalActive}</span> Active
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Star className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
+                  <span className="text-foreground font-bold">{stats.avgRating}</span> Avg Rating
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
+                  Hottest: <span className="text-primary font-bold">{stats.hottestZone}</span>
+                </span>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Borough filters */}
           <motion.div
             className="flex items-center gap-2 overflow-x-auto no-scrollbar"
             key={selectedCity}
