@@ -136,6 +136,22 @@ const ReviewFeed = ({ profileId, profileOwnerId }: { profileId: string; profileO
             {review.comment && (
               <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
             )}
+
+            {/* Rate Client button — only visible to profile owner for reviews they received */}
+            {user && profileOwnerId && user.id === profileOwnerId && user.id !== review.reviewer_id && (
+              <div className="mt-3 pt-3 border-t border-border/50 flex justify-end">
+                <RateClientDialog
+                  reviewId={review.id}
+                  clientId={review.reviewer_id}
+                  clientName={review.is_anonymous ? "Anonymous" : (review.reviewer_name ?? "Anonymous")}
+                  alreadyRated={review.already_rated}
+                  onRated={fetchReviews}
+                />
+                {review.already_rated && (
+                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Rated ✓</span>
+                )}
+              </div>
+            )}
           </motion.div>
         );
       })}
