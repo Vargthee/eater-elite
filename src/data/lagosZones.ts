@@ -106,4 +106,3 @@ export const getBoroughs = (cityName: string): string[] => {
 // Re-export for backward compat
 export const lagoBoroughs = getBoroughs("Lagos");
 export { lagosZones };
-export type { HeatZone };
