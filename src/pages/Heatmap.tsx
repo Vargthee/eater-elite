@@ -13,6 +13,7 @@ const Heatmap = () => {
   const [showLabels, setShowLabels] = useState(true);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
   const [citySearch, setCitySearch] = useState("");
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredCityNames = useMemo(
@@ -23,9 +24,32 @@ const Heatmap = () => {
   useEffect(() => {
     if (cityMenuOpen) {
       setCitySearch("");
+      setHighlightedIndex(0);
       setTimeout(() => searchInputRef.current?.focus(), 100);
     }
   }, [cityMenuOpen]);
+
+  useEffect(() => {
+    setHighlightedIndex(0);
+  }, [citySearch]);
+
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setHighlightedIndex((i) => Math.min(i + 1, filteredCityNames.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedIndex((i) => Math.max(i - 1, 0));
+      } else if (e.key === "Enter" && filteredCityNames.length > 0) {
+        e.preventDefault();
+        handleCityChange(filteredCityNames[highlightedIndex]);
+      } else if (e.key === "Escape") {
+        setCityMenuOpen(false);
+      }
+    },
+    [filteredCityNames, highlightedIndex]
+  );
 
   const city = cityData[selectedCity];
   const boroughs = useMemo(() => getBoroughs(selectedCity), [selectedCity]);
