@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Shield, TrendingUp, MapPin, Users, LogOut, Loader as Loader2, ArrowUpRight } from "lucide-react";
+import { Shield, TrendingUp, MapPin, Users, LogOut, Loader as Loader2, ArrowUpRight, Flame } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import ProfileCard from "@/components/ProfileCard";
@@ -80,13 +80,15 @@ const Index = () => {
             <span className="tag hidden sm:inline-flex">BETA</span>
           </motion.div>
           <div className="flex items-center gap-3">
-            <motion.button
-              className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Explore
-            </motion.button>
+            <motion.div whileHover={{ y: -1 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/heatmap"
+                className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Flame className="w-3.5 h-3.5 text-primary" />
+                Heatmap
+              </Link>
+            </motion.div>
             {user ? (
               <motion.button
                 onClick={handleSignOut}

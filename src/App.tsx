@@ -12,6 +12,7 @@ const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Profile = lazy(() => import("./pages/Profile"));
 const EditProfile = lazy(() => import("./pages/EditProfile"));
+const Heatmap = lazy(() => import("./pages/Heatmap"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -19,12 +20,9 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 5,
       gcTime: 1000 * 60 * 10,
-      gcTime: 1000 * 60 * 10,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       retry: 1,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
     },
   },
 });
@@ -48,6 +46,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/profile/:id" element={<Profile />} />
               <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/heatmap" element={<Heatmap />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
