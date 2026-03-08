@@ -20,20 +20,14 @@ interface Review {
   already_rated?: boolean;
 }
 
-const ReviewFeed = ({ profileId }: { profileId: string }) => {
+const ReviewFeed = ({ profileId, profileOwnerId }: { profileId: string; profileOwnerId?: string }) => {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchReviews = useCallback(async () => {
     setLoading(true);
     const cacheKey = `${CACHE_KEYS.REVIEWS}:${profileId}`;
-    const cached = cacheManager.get<Review[]>(cacheKey);
-
-    if (cached) {
-      setReviews(cached);
-      setLoading(false);
-      return;
-    }
 
     const { data } = await supabase
       .from("reviews")
@@ -42,17 +36,33 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
       .order("created_at", { ascending: false });
 
     if (data) {
+      // Check which reviews the current user has already rated
+      let ratedReviewIds = new Set<string>();
+      if (user) {
+        const { data: ratings } = await supabase
+          .from("client_ratings")
+          .select("review_id")
+          .eq("rater_id", user.id);
+        if (ratings) {
+          ratedReviewIds = new Set(ratings.map((r) => r.review_id));
+        }
+      }
+
       const enriched = await Promise.all(
         data.map(async (r) => {
+          let reviewer_name: string | undefined;
           if (!r.is_anonymous) {
             const { data: p } = await supabase.from("profiles").select("display_name").eq("user_id", r.reviewer_id).maybeSingle();
-            return { ...r, reviewer_name: p?.display_name };
+            reviewer_name = p?.display_name;
           }
-          return r;
+          return { ...r, reviewer_name, already_rated: ratedReviewIds.has(r.id) };
         })
       );
       cacheManager.set(cacheKey, enriched);
       setReviews(enriched);
+    }
+    setLoading(false);
+  }, [profileId, user]);
     }
     setLoading(false);
   }, [profileId]);
