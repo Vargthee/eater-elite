@@ -63,9 +63,6 @@ const ReviewFeed = ({ profileId, profileOwnerId }: { profileId: string; profileO
     }
     setLoading(false);
   }, [profileId, user]);
-    }
-    setLoading(false);
-  }, [profileId]);
 
   useEffect(() => {
     fetchReviews();
