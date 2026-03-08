@@ -29,9 +29,12 @@ const Heatmap = () => {
     }
   }, [cityMenuOpen]);
 
-  useEffect(() => {
-    setHighlightedIndex(0);
-  }, [citySearch]);
+  const handleCityChange = useCallback((name: string) => {
+    setSelectedCity(name);
+    setSelectedZone(null);
+    setSelectedBorough(null);
+    setCityMenuOpen(false);
+  }, []);
 
   const handleSearchKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -48,7 +51,7 @@ const Heatmap = () => {
         setCityMenuOpen(false);
       }
     },
-    [filteredCityNames, highlightedIndex]
+    [filteredCityNames, highlightedIndex, handleCityChange]
   );
 
   const city = cityData[selectedCity];
@@ -61,13 +64,6 @@ const Heatmap = () => {
 
   const handleZoneClick = useCallback((zone: HeatZone) => {
     setSelectedZone((prev) => (prev?.id === zone.id ? null : zone));
-  }, []);
-
-  const handleCityChange = useCallback((name: string) => {
-    setSelectedCity(name);
-    setSelectedZone(null);
-    setSelectedBorough(null);
-    setCityMenuOpen(false);
   }, []);
 
   return (
