@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import StarRating from "./StarRating";
+import RateClientDialog from "./RateClientDialog";
 import { MessageSquare } from "lucide-react";
 import { cacheManager, CACHE_KEYS } from "@/integrations/supabase/cache";
 
@@ -13,23 +15,19 @@ interface Review {
   comment: string | null;
   created_at: string;
   is_anonymous: boolean;
+  reviewer_id: string;
   reviewer_name?: string;
+  already_rated?: boolean;
 }
 
-const ReviewFeed = ({ profileId }: { profileId: string }) => {
+const ReviewFeed = ({ profileId, profileOwnerId }: { profileId: string; profileOwnerId?: string }) => {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchReviews = useCallback(async () => {
     setLoading(true);
     const cacheKey = `${CACHE_KEYS.REVIEWS}:${profileId}`;
-    const cached = cacheManager.get<Review[]>(cacheKey);
-
-    if (cached) {
-      setReviews(cached);
-      setLoading(false);
-      return;
-    }
 
     const { data } = await supabase
       .from("reviews")
@@ -38,20 +36,33 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
       .order("created_at", { ascending: false });
 
     if (data) {
+      // Check which reviews the current user has already rated
+      let ratedReviewIds = new Set<string>();
+      if (user) {
+        const { data: ratings } = await supabase
+          .from("client_ratings")
+          .select("review_id")
+          .eq("rater_id", user.id);
+        if (ratings) {
+          ratedReviewIds = new Set(ratings.map((r) => r.review_id));
+        }
+      }
+
       const enriched = await Promise.all(
         data.map(async (r) => {
+          let reviewer_name: string | undefined;
           if (!r.is_anonymous) {
             const { data: p } = await supabase.from("profiles").select("display_name").eq("user_id", r.reviewer_id).maybeSingle();
-            return { ...r, reviewer_name: p?.display_name };
+            reviewer_name = p?.display_name;
           }
-          return r;
+          return { ...r, reviewer_name, already_rated: ratedReviewIds.has(r.id) };
         })
       );
       cacheManager.set(cacheKey, enriched);
       setReviews(enriched);
     }
     setLoading(false);
-  }, [profileId]);
+  }, [profileId, user]);
 
   useEffect(() => {
     fetchReviews();
@@ -124,6 +135,22 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
 
             {review.comment && (
               <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
+            )}
+
+            {/* Rate Client button — only visible to profile owner for reviews they received */}
+            {user && profileOwnerId && user.id === profileOwnerId && user.id !== review.reviewer_id && (
+              <div className="mt-3 pt-3 border-t border-border/50 flex justify-end">
+                <RateClientDialog
+                  reviewId={review.id}
+                  clientId={review.reviewer_id}
+                  clientName={review.is_anonymous ? "Anonymous" : (review.reviewer_name ?? "Anonymous")}
+                  alreadyRated={review.already_rated}
+                  onRated={fetchReviews}
+                />
+                {review.already_rated && (
+                  <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Rated ✓</span>
+                )}
+              </div>
             )}
           </motion.div>
         );

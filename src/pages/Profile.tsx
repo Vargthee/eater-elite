@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2, Pencil } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2, Pencil, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import StarRating from "@/components/StarRating";
@@ -9,6 +9,7 @@ import ReviewFeed from "@/components/ReviewFeed";
 import WriteReviewDialog from "@/components/WriteReviewDialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useClientScore } from "@/hooks/useClientScore";
 
 interface ProfileDetail {
   id: string;
@@ -40,6 +41,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [vouchLoading, setVouchLoading] = useState(false);
   const [reviewKey, setReviewKey] = useState(0);
+  const { score: clientScore } = useClientScore(profile?.user_id);
 
   const fetchProfile = useCallback(async () => {
     if (!id) return;
@@ -181,6 +183,17 @@ const Profile = () => {
                   <Heart className="w-3.5 h-3.5" />
                   {vouchCount} vouches
                 </span>
+                {clientScore && (
+                  <motion.span
+                    className="flex items-center gap-1 px-2 py-0.5 border border-primary/30 bg-primary/5 text-primary"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <Shield className="w-3 h-3" />
+                    {clientScore.avg} Client
+                  </motion.span>
+                )}
               </div>
             </div>
 
@@ -261,7 +274,7 @@ const Profile = () => {
           className="mt-6"
         >
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-4">Reviews</p>
-          <ReviewFeed key={reviewKey} profileId={profile.id} />
+          <ReviewFeed key={reviewKey} profileId={profile.id} profileOwnerId={profile.user_id} />
         </motion.div>
       </div>
     </div>

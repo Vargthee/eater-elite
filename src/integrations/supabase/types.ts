@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_ratings: {
+        Row: {
+          client_id: string
+          communication_rating: number
+          created_at: string
+          id: string
+          rater_id: string
+          respect_rating: number
+          review_id: string
+          vibes_rating: number
+        }
+        Insert: {
+          client_id: string
+          communication_rating: number
+          created_at?: string
+          id?: string
+          rater_id: string
+          respect_rating: number
+          review_id: string
+          vibes_rating: number
+        }
+        Update: {
+          client_id?: string
+          communication_rating?: number
+          created_at?: string
+          id?: string
+          rater_id?: string
+          respect_rating?: number
+          review_id?: string
+          vibes_rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_ratings_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: true
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
