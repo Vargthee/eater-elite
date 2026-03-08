@@ -12,6 +12,20 @@ const Heatmap = () => {
   const [selectedBorough, setSelectedBorough] = useState<string | null>(null);
   const [showLabels, setShowLabels] = useState(true);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
+  const [citySearch, setCitySearch] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const filteredCityNames = useMemo(
+    () => cityNames.filter((name) => name.toLowerCase().includes(citySearch.toLowerCase())),
+    [citySearch]
+  );
+
+  useEffect(() => {
+    if (cityMenuOpen) {
+      setCitySearch("");
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  }, [cityMenuOpen]);
 
   const city = cityData[selectedCity];
   const boroughs = useMemo(() => getBoroughs(selectedCity), [selectedCity]);
