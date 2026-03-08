@@ -210,7 +210,7 @@ const Heatmap = () => {
       </div>
 
       {/* Map area */}
-      <main className="pt-[108px] px-4 pb-8">
+      <main className="pt-[140px] px-4 pb-8">
         <div className="container max-w-6xl mx-auto">
           {/* Map header */}
           <motion.div
