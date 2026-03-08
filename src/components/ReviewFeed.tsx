@@ -1,7 +1,9 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion } from "framer-motion";
 import StarRating from "./StarRating";
+import RateClientDialog from "./RateClientDialog";
 import { MessageSquare } from "lucide-react";
 import { cacheManager, CACHE_KEYS } from "@/integrations/supabase/cache";
 
@@ -13,7 +15,9 @@ interface Review {
   comment: string | null;
   created_at: string;
   is_anonymous: boolean;
+  reviewer_id: string;
   reviewer_name?: string;
+  already_rated?: boolean;
 }
 
 const ReviewFeed = ({ profileId }: { profileId: string }) => {
