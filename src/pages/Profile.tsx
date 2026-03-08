@@ -41,6 +41,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [vouchLoading, setVouchLoading] = useState(false);
   const [reviewKey, setReviewKey] = useState(0);
+  const { score: clientScore } = useClientScore(profile?.user_id);
 
   const fetchProfile = useCallback(async () => {
     if (!id) return;
