@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import StarRating from "./StarRating";
 import { MessageSquare } from "lucide-react";
+import { cacheManager, CACHE_KEYS } from "@/integrations/supabase/cache";
 
 interface Review {
   id: string;
@@ -19,31 +20,42 @@ const ReviewFeed = ({ profileId }: { profileId: string }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetch = async () => {
-      setLoading(true);
-      const { data } = await supabase
-        .from("reviews")
-        .select("*")
-        .eq("profile_id", profileId)
-        .order("created_at", { ascending: false });
+  const fetchReviews = useCallback(async () => {
+    setLoading(true);
+    const cacheKey = `${CACHE_KEYS.REVIEWS}:${profileId}`;
+    const cached = cacheManager.get<Review[]>(cacheKey);
 
-      if (data) {
-        const enriched = await Promise.all(
-          data.map(async (r) => {
-            if (!r.is_anonymous) {
-              const { data: p } = await supabase.from("profiles").select("display_name").eq("user_id", r.reviewer_id).maybeSingle();
-              return { ...r, reviewer_name: p?.display_name };
-            }
-            return r;
-          })
-        );
-        setReviews(enriched);
-      }
+    if (cached) {
+      setReviews(cached);
       setLoading(false);
-    };
-    fetch();
+      return;
+    }
+
+    const { data } = await supabase
+      .from("reviews")
+      .select("*")
+      .eq("profile_id", profileId)
+      .order("created_at", { ascending: false });
+
+    if (data) {
+      const enriched = await Promise.all(
+        data.map(async (r) => {
+          if (!r.is_anonymous) {
+            const { data: p } = await supabase.from("profiles").select("display_name").eq("user_id", r.reviewer_id).maybeSingle();
+            return { ...r, reviewer_name: p?.display_name };
+          }
+          return r;
+        })
+      );
+      cacheManager.set(cacheKey, enriched);
+      setReviews(enriched);
+    }
+    setLoading(false);
   }, [profileId]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   if (loading) {
     return (
