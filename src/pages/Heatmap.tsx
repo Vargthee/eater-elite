@@ -103,30 +103,45 @@ const Heatmap = () => {
                       exit={{ opacity: 0 }}
                     />
                     <motion.div
-                      className="absolute top-full left-0 mt-1 z-50 border border-border bg-card/95 backdrop-blur-xl min-w-[180px]"
+                      className="absolute top-full left-0 mt-1 z-50 border border-border bg-card/95 backdrop-blur-xl min-w-[220px] max-h-[360px] flex flex-col"
                       initial={{ opacity: 0, y: -8, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.95 }}
                       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      {cityNames.map((name) => (
-                        <motion.button
-                          key={name}
-                          onClick={() => handleCityChange(name)}
-                          className={`w-full flex items-center gap-2 px-4 py-2.5 text-[11px] font-mono uppercase tracking-wider transition-colors text-left ${
-                            selectedCity === name
-                              ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                          }`}
-                          whileHover={{ x: 3 }}
-                        >
-                          <MapPin className="w-3 h-3 shrink-0" />
-                          {name}
-                          {selectedCity === name && (
-                            <span className="ml-auto text-primary">●</span>
-                          )}
-                        </motion.button>
-                      ))}
+                      <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
+                        <Search className="w-3 h-3 text-muted-foreground shrink-0" />
+                        <input
+                          ref={searchInputRef}
+                          value={citySearch}
+                          onChange={(e) => setCitySearch(e.target.value)}
+                          placeholder="Search cities..."
+                          className="bg-transparent text-[11px] font-mono uppercase tracking-wider text-foreground placeholder:text-muted-foreground outline-none w-full"
+                        />
+                      </div>
+                      <div className="overflow-y-auto">
+                        {filteredCityNames.length === 0 && (
+                          <p className="px-4 py-3 text-[11px] font-mono text-muted-foreground">No cities found</p>
+                        )}
+                        {filteredCityNames.map((name) => (
+                          <motion.button
+                            key={name}
+                            onClick={() => handleCityChange(name)}
+                            className={`w-full flex items-center gap-2 px-4 py-2.5 text-[11px] font-mono uppercase tracking-wider transition-colors text-left ${
+                              selectedCity === name
+                                ? "bg-primary/10 text-primary"
+                                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                            }`}
+                            whileHover={{ x: 3 }}
+                          >
+                            <MapPin className="w-3 h-3 shrink-0" />
+                            {name}
+                            {selectedCity === name && (
+                              <span className="ml-auto text-primary">●</span>
+                            )}
+                          </motion.button>
+                        ))}
+                      </div>
                     </motion.div>
                   </>
                 )}
