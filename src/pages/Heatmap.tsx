@@ -13,6 +13,7 @@ const Heatmap = () => {
   const [showLabels, setShowLabels] = useState(true);
   const [cityMenuOpen, setCityMenuOpen] = useState(false);
   const [citySearch, setCitySearch] = useState("");
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredCityNames = useMemo(
@@ -23,9 +24,35 @@ const Heatmap = () => {
   useEffect(() => {
     if (cityMenuOpen) {
       setCitySearch("");
+      setHighlightedIndex(0);
       setTimeout(() => searchInputRef.current?.focus(), 100);
     }
   }, [cityMenuOpen]);
+
+  const handleCityChange = useCallback((name: string) => {
+    setSelectedCity(name);
+    setSelectedZone(null);
+    setSelectedBorough(null);
+    setCityMenuOpen(false);
+  }, []);
+
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setHighlightedIndex((i) => Math.min(i + 1, filteredCityNames.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedIndex((i) => Math.max(i - 1, 0));
+      } else if (e.key === "Enter" && filteredCityNames.length > 0) {
+        e.preventDefault();
+        handleCityChange(filteredCityNames[highlightedIndex]);
+      } else if (e.key === "Escape") {
+        setCityMenuOpen(false);
+      }
+    },
+    [filteredCityNames, highlightedIndex, handleCityChange]
+  );
 
   const city = cityData[selectedCity];
   const boroughs = useMemo(() => getBoroughs(selectedCity), [selectedCity]);
@@ -37,13 +64,6 @@ const Heatmap = () => {
 
   const handleZoneClick = useCallback((zone: HeatZone) => {
     setSelectedZone((prev) => (prev?.id === zone.id ? null : zone));
-  }, []);
-
-  const handleCityChange = useCallback((name: string) => {
-    setSelectedCity(name);
-    setSelectedZone(null);
-    setSelectedBorough(null);
-    setCityMenuOpen(false);
   }, []);
 
   return (
@@ -115,6 +135,7 @@ const Heatmap = () => {
                           ref={searchInputRef}
                           value={citySearch}
                           onChange={(e) => setCitySearch(e.target.value)}
+                          onKeyDown={handleSearchKeyDown}
                           placeholder="Search cities..."
                           className="bg-transparent text-[11px] font-mono uppercase tracking-wider text-foreground placeholder:text-muted-foreground outline-none w-full"
                         />
@@ -123,13 +144,16 @@ const Heatmap = () => {
                         {filteredCityNames.length === 0 && (
                           <p className="px-4 py-3 text-[11px] font-mono text-muted-foreground">No cities found</p>
                         )}
-                        {filteredCityNames.map((name) => (
+                        {filteredCityNames.map((name, index) => (
                           <motion.button
                             key={name}
                             onClick={() => handleCityChange(name)}
+                            onMouseEnter={() => setHighlightedIndex(index)}
                             className={`w-full flex items-center gap-2 px-4 py-2.5 text-[11px] font-mono uppercase tracking-wider transition-colors text-left ${
                               selectedCity === name
                                 ? "bg-primary/10 text-primary"
+                                : index === highlightedIndex
+                                ? "bg-muted/50 text-foreground"
                                 : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                             }`}
                             whileHover={{ x: 3 }}
