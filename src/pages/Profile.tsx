@@ -183,6 +183,17 @@ const Profile = () => {
                   <Heart className="w-3.5 h-3.5" />
                   {vouchCount} vouches
                 </span>
+                {clientScore && (
+                  <motion.span
+                    className="flex items-center gap-1 px-2 py-0.5 border border-primary/30 bg-primary/5 text-primary"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <Shield className="w-3 h-3" />
+                    {clientScore.avg} Client
+                  </motion.span>
+                )}
               </div>
             </div>
 
