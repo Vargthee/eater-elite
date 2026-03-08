@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2, Pencil } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2, Pencil, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import StarRating from "@/components/StarRating";
@@ -9,6 +9,7 @@ import ReviewFeed from "@/components/ReviewFeed";
 import WriteReviewDialog from "@/components/WriteReviewDialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useClientScore } from "@/hooks/useClientScore";
 
 interface ProfileDetail {
   id: string;
