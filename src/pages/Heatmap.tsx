@@ -135,6 +135,7 @@ const Heatmap = () => {
                           ref={searchInputRef}
                           value={citySearch}
                           onChange={(e) => setCitySearch(e.target.value)}
+                          onKeyDown={handleSearchKeyDown}
                           placeholder="Search cities..."
                           className="bg-transparent text-[11px] font-mono uppercase tracking-wider text-foreground placeholder:text-muted-foreground outline-none w-full"
                         />
@@ -143,13 +144,16 @@ const Heatmap = () => {
                         {filteredCityNames.length === 0 && (
                           <p className="px-4 py-3 text-[11px] font-mono text-muted-foreground">No cities found</p>
                         )}
-                        {filteredCityNames.map((name) => (
+                        {filteredCityNames.map((name, index) => (
                           <motion.button
                             key={name}
                             onClick={() => handleCityChange(name)}
+                            onMouseEnter={() => setHighlightedIndex(index)}
                             className={`w-full flex items-center gap-2 px-4 py-2.5 text-[11px] font-mono uppercase tracking-wider transition-colors text-left ${
                               selectedCity === name
                                 ? "bg-primary/10 text-primary"
+                                : index === highlightedIndex
+                                ? "bg-muted/50 text-foreground"
                                 : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                             }`}
                             whileHover={{ x: 3 }}
