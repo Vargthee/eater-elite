@@ -1,22 +1,34 @@
-import { useState, useCallback } from "react";
-import { motion } from "framer-motion";
-import { ArrowLeft, MapPin, Flame, Eye, EyeOff } from "lucide-react";
+import { useState, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, MapPin, Flame, Eye, EyeOff, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
-import { lagosZones, lagoBoroughs, type HeatZone } from "@/data/lagosZones";
+import { cityData, cityNames, getBoroughs, type HeatZone } from "@/data/lagosZones";
 import HeatZoneBlob from "@/components/HeatZoneBlob";
 import ZoneDetailPanel from "@/components/ZoneDetailPanel";
 
 const Heatmap = () => {
+  const [selectedCity, setSelectedCity] = useState("Lagos");
   const [selectedZone, setSelectedZone] = useState<HeatZone | null>(null);
   const [selectedBorough, setSelectedBorough] = useState<string | null>(null);
   const [showLabels, setShowLabels] = useState(true);
+  const [cityMenuOpen, setCityMenuOpen] = useState(false);
+
+  const city = cityData[selectedCity];
+  const boroughs = useMemo(() => getBoroughs(selectedCity), [selectedCity]);
 
   const filteredZones = selectedBorough
-    ? lagosZones.filter((z) => z.borough === selectedBorough)
-    : lagosZones;
+    ? city.zones.filter((z) => z.borough === selectedBorough)
+    : city.zones;
 
   const handleZoneClick = useCallback((zone: HeatZone) => {
     setSelectedZone((prev) => (prev?.id === zone.id ? null : zone));
+  }, []);
+
+  const handleCityChange = useCallback((name: string) => {
+    setSelectedCity(name);
+    setSelectedZone(null);
+    setSelectedBorough(null);
+    setCityMenuOpen(false);
   }, []);
 
   return (
@@ -45,7 +57,65 @@ const Heatmap = () => {
               <span className="font-display font-extrabold text-sm tracking-tight text-foreground">
                 THE HEATMAP
               </span>
-              <span className="tag hidden sm:inline-flex">LAGOS</span>
+            </div>
+            <div className="h-4 w-px bg-border hidden sm:block" />
+            {/* City selector */}
+            <div className="relative">
+              <motion.button
+                onClick={() => setCityMenuOpen(!cityMenuOpen)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider border border-primary bg-primary/10 text-primary transition-colors"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <MapPin className="w-3 h-3" />
+                {selectedCity}
+                <motion.span
+                  animate={{ rotate: cityMenuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ChevronDown className="w-3 h-3" />
+                </motion.span>
+              </motion.button>
+
+              <AnimatePresence>
+                {cityMenuOpen && (
+                  <>
+                    <motion.div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setCityMenuOpen(false)}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    />
+                    <motion.div
+                      className="absolute top-full left-0 mt-1 z-50 border border-border bg-card/95 backdrop-blur-xl min-w-[180px]"
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      {cityNames.map((name) => (
+                        <motion.button
+                          key={name}
+                          onClick={() => handleCityChange(name)}
+                          className={`w-full flex items-center gap-2 px-4 py-2.5 text-[11px] font-mono uppercase tracking-wider transition-colors text-left ${
+                            selectedCity === name
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                          }`}
+                          whileHover={{ x: 3 }}
+                        >
+                          <MapPin className="w-3 h-3 shrink-0" />
+                          {name}
+                          {selectedCity === name && (
+                            <span className="ml-auto text-primary">●</span>
+                          )}
+                        </motion.button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
@@ -66,6 +136,7 @@ const Heatmap = () => {
         <div className="container px-4 py-2.5">
           <motion.div
             className="flex items-center gap-2 overflow-x-auto no-scrollbar"
+            key={selectedCity}
             initial="initial"
             animate="animate"
             variants={{ animate: { transition: { staggerChildren: 0.04 } } }}
@@ -84,7 +155,7 @@ const Heatmap = () => {
               <MapPin className="w-3 h-3" />
               All Zones
             </motion.button>
-            {lagoBoroughs.map((borough) => (
+            {boroughs.map((borough) => (
               <motion.button
                 key={borough}
                 variants={{ initial: { opacity: 0, y: 5 }, animate: { opacity: 1, y: 0 } }}
@@ -110,6 +181,7 @@ const Heatmap = () => {
           {/* Map header */}
           <motion.div
             className="mb-6 mt-4"
+            key={`header-${selectedCity}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -118,84 +190,98 @@ const Heatmap = () => {
               Hyper-Local Discovery
             </p>
             <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight">
-              Where Lagos<br />
-              <span className="text-gradient">dey hot right now</span> 🔥
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={selectedCity}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="block"
+                >
+                  <span className="text-gradient">{city.tagline}</span> 🔥
+                </motion.span>
+              </AnimatePresence>
             </h1>
             <p className="text-muted-foreground text-sm mt-2 max-w-lg">
-              Anonymized heat zones showing where top-rated providers are most active. No exact locations — privacy first.
+              Anonymized heat zones showing where top-rated providers are most active in {selectedCity}. No exact locations — privacy first.
             </p>
           </motion.div>
 
           {/* Map container */}
-          <motion.div
-            className="relative w-full border border-border bg-card/30 overflow-hidden"
-            style={{ aspectRatio: "16/10" }}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {/* Grid overlay */}
-            <div className="absolute inset-0 opacity-[0.04]"
-              style={{
-                backgroundImage: `
-                  linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
-                  linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)
-                `,
-                backgroundSize: "60px 60px",
-              }}
-            />
-
-            {/* Ambient background glow */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: `
-                  radial-gradient(ellipse 60% 50% at 50% 60%, hsl(var(--primary) / 0.04) 0%, transparent 100%),
-                  radial-gradient(ellipse 30% 40% at 55% 70%, hsl(var(--primary) / 0.06) 0%, transparent 100%)
-                `,
-              }}
-            />
-
-            {/* Lagos outline hint — abstract shape */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06]" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path
-                d="M10,45 Q15,30 25,25 Q35,18 45,22 Q55,15 65,20 Q75,18 85,25 Q90,35 88,50 Q90,60 85,70 Q78,78 65,75 Q55,80 45,78 Q35,82 25,75 Q15,68 12,55 Z"
-                fill="none"
-                stroke="hsl(var(--primary))"
-                strokeWidth="0.3"
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedCity}
+              className="relative w-full border border-border bg-card/30 overflow-hidden"
+              style={{ aspectRatio: "16/10" }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Grid overlay */}
+              <div className="absolute inset-0 opacity-[0.04]"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
+                    linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)
+                  `,
+                  backgroundSize: "60px 60px",
+                }}
               />
-            </svg>
 
-            {/* Heat zones */}
-            {filteredZones.map((zone) => (
-              <HeatZoneBlob
-                key={zone.id}
-                zone={zone}
-                isSelected={selectedZone?.id === zone.id}
-                onClick={handleZoneClick}
+              {/* Ambient background glow */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: `
+                    radial-gradient(ellipse 60% 50% at 50% 60%, hsl(var(--primary) / 0.04) 0%, transparent 100%),
+                    radial-gradient(ellipse 30% 40% at 55% 70%, hsl(var(--primary) / 0.06) 0%, transparent 100%)
+                  `,
+                }}
               />
-            ))}
 
-            {/* Zone labels */}
-            {showLabels &&
-              filteredZones.map((zone) => (
-                <motion.div
-                  key={`label-${zone.id}`}
-                  className="absolute pointer-events-none -translate-x-1/2"
-                  style={{ left: `${zone.cx}%`, top: `${zone.cy + 5}%` }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.6 }}
-                  transition={{ delay: 0.8 }}
-                >
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground">
-                    {zone.name}
-                  </span>
-                </motion.div>
+              {/* City outline hint */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.06]" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path
+                  d={city.outline}
+                  fill="none"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth="0.3"
+                />
+              </svg>
+
+              {/* Heat zones */}
+              {filteredZones.map((zone) => (
+                <HeatZoneBlob
+                  key={zone.id}
+                  zone={zone}
+                  isSelected={selectedZone?.id === zone.id}
+                  onClick={handleZoneClick}
+                />
               ))}
 
-            {/* Detail panel */}
-            <ZoneDetailPanel zone={selectedZone} onClose={() => setSelectedZone(null)} />
-          </motion.div>
+              {/* Zone labels */}
+              {showLabels &&
+                filteredZones.map((zone) => (
+                  <motion.div
+                    key={`label-${zone.id}`}
+                    className="absolute pointer-events-none -translate-x-1/2"
+                    style={{ left: `${zone.cx}%`, top: `${zone.cy + 5}%` }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.6 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground">
+                      {zone.name}
+                    </span>
+                  </motion.div>
+                ))}
+
+              {/* Detail panel */}
+              <ZoneDetailPanel zone={selectedZone} onClose={() => setSelectedZone(null)} />
+            </motion.div>
+          </AnimatePresence>
 
           {/* Legend */}
           <motion.div
