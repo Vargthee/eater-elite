@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, MapPin, Flame, Eye, EyeOff, ChevronDown } from "lucide-react";
+import { ArrowLeft, MapPin, Flame, Eye, EyeOff, ChevronDown, Users, Star, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cityData, cityNames, getBoroughs, type HeatZone } from "@/data/lagosZones";
+import { cityData, cityNames, getBoroughs, getCityStats, type HeatZone } from "@/data/lagosZones";
 import HeatZoneBlob from "@/components/HeatZoneBlob";
 import ZoneDetailPanel from "@/components/ZoneDetailPanel";
 
@@ -15,6 +15,7 @@ const Heatmap = () => {
 
   const city = cityData[selectedCity];
   const boroughs = useMemo(() => getBoroughs(selectedCity), [selectedCity]);
+  const stats = useMemo(() => getCityStats(selectedCity), [selectedCity]);
 
   const filteredZones = selectedBorough
     ? city.zones.filter((z) => z.borough === selectedBorough)
@@ -131,9 +132,41 @@ const Heatmap = () => {
         </div>
       </motion.nav>
 
-      {/* Borough filters */}
+      {/* Stats bar + Borough filters */}
       <div className="fixed top-14 inset-x-0 z-40 border-b border-border bg-background/60 backdrop-blur-lg">
-        <div className="container px-4 py-2.5">
+        <div className="container px-4 py-2">
+          {/* Stats bar */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`stats-${selectedCity}`}
+              className="flex items-center gap-4 sm:gap-6 mb-2 pb-2 border-b border-border/50"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
+                  <span className="text-foreground font-bold">{stats.totalActive}</span> Active
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Star className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
+                  <span className="text-foreground font-bold">{stats.avgRating}</span> Avg Rating
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-primary" />
+                <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider">
+                  Hottest: <span className="text-primary font-bold">{stats.hottestZone}</span>
+                </span>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Borough filters */}
           <motion.div
             className="flex items-center gap-2 overflow-x-auto no-scrollbar"
             key={selectedCity}
@@ -176,7 +209,7 @@ const Heatmap = () => {
       </div>
 
       {/* Map area */}
-      <main className="pt-[108px] px-4 pb-8">
+      <main className="pt-[140px] px-4 pb-8">
         <div className="container max-w-6xl mx-auto">
           {/* Map header */}
           <motion.div
