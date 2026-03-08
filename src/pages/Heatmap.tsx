@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, MapPin, Flame, Eye, EyeOff, ChevronDown } from "lucide-react";
+import { ArrowLeft, MapPin, Flame, Eye, EyeOff, ChevronDown, Users, Star, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cityData, cityNames, getBoroughs, type HeatZone } from "@/data/lagosZones";
+import { cityData, cityNames, getBoroughs, getCityStats, type HeatZone } from "@/data/lagosZones";
 import HeatZoneBlob from "@/components/HeatZoneBlob";
 import ZoneDetailPanel from "@/components/ZoneDetailPanel";
 
