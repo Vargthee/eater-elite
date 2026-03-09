@@ -30,6 +30,12 @@ const Index = () => {
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const { scrollYProgress } = useScroll();
   const navBorder = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
+  
+  // Parallax transforms for hero section depth
+  const heroY1 = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
+  const heroY2 = useTransform(scrollYProgress, [0, 0.3], [0, -50]);
+  const heroY3 = useTransform(scrollYProgress, [0, 0.3], [0, -30]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.3]);
 
   const filteredProfiles = filterProfiles(dummyProfiles, searchQuery, selectedCity);
 
