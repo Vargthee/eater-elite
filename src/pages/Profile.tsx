@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Loader2, Pencil, Shield } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Heart, MessageSquare, MapPin, Pencil, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import StarRating from "@/components/StarRating";
 import ReviewFeed from "@/components/ReviewFeed";
 import WriteReviewDialog from "@/components/WriteReviewDialog";
+import ProfileDetailSkeleton from "@/components/ProfileDetailSkeleton";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useClientScore } from "@/hooks/useClientScore";
@@ -107,11 +108,7 @@ const Profile = () => {
   }, [fetchMetrics]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
-      </div>
-    );
+    return <ProfileDetailSkeleton />;
   }
 
   if (!profile) {
