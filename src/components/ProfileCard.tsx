@@ -35,12 +35,16 @@ const ProfileCard = memo(({ profile, rank, index = 0 }: ProfileCardProps) => {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -4, transition: { duration: 0.3, ease: "easeOut" } }}
-      className="group relative border border-border bg-card p-5 flex flex-col gap-4 overflow-hidden transition-colors duration-500 hover:border-primary/30 hover:bg-card/80"
+      className="group relative border border-border bg-card p-5 flex flex-col gap-4 overflow-hidden transition-all duration-500 hover:border-primary/40 hover:bg-card/80 hover:shadow-[0_0_0_1px_hsl(165_75%_42%/0.15),0_20px_40px_-10px_hsl(160_20%_10%/0.5)]"
     >
       {/* Hover glow overlay */}
       <motion.div
         className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.06), transparent 70%)" }}
+        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.08), transparent 70%)" }}
+      />
+      <motion.div
+        className="absolute top-0 right-0 w-32 h-32 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+        style={{ background: "radial-gradient(circle at center, hsl(var(--accent) / 0.06), transparent 70%)" }}
       />
 
       {/* Header */}
