@@ -67,37 +67,61 @@ const DisplayNameStep = ({ value, onChange, onNext, onBack }: DisplayNameStepPro
   const canProceed = value.length >= 3 && isAvailable === true && !error;
 
   return (
-    <div className="space-y-8">
-      <div className="text-center space-y-3">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary">
-          Step 1 of 5
-        </p>
-        <h2 className="font-display font-extrabold text-2xl sm:text-4xl">
-          Choose Your Display Name
-        </h2>
-        <p className="text-muted-foreground text-sm max-w-md mx-auto">
+    <div className="space-y-10">
+      <motion.div 
+        className="text-center space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-primary mb-3">
+            <span className="inline-block w-6 h-[1px] bg-primary/40 mr-2 align-middle"></span>
+            Step 1 of 5
+          </p>
+          <h2 className="font-display font-extrabold text-3xl sm:text-5xl leading-[0.9] tracking-[-0.03em] mb-4">
+            Choose Your<br />Display Name
+          </h2>
+        </div>
+        <p className="text-muted-foreground text-sm max-w-md mx-auto leading-relaxed tracking-[-0.01em]">
           This is how you'll appear to others. Make it memorable! 
-          You can't change it later.
+          <span className="text-foreground/80"> You can't change it later.</span>
         </p>
-      </div>
+      </motion.div>
 
-      <div className="max-w-md mx-auto space-y-4">
-        <div className="relative">
+      <motion.div 
+        className="max-w-md mx-auto space-y-5"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <div className="relative group">
           <Input
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="VelvetTongue"
-            className="pr-12 text-lg font-display tracking-tight"
+            className="pr-12 text-lg font-display tracking-tight border-border focus:border-primary transition-all"
             maxLength={30}
             autoFocus
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            {isChecking && <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />}
+            {isChecking && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
             {!isChecking && isAvailable === true && (
-              <Check className="w-5 h-5 text-primary" />
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                <Check className="w-5 h-5 text-primary" />
+              </motion.div>
             )}
             {!isChecking && isAvailable === false && value.length >= 3 && !error && (
-              <X className="w-5 h-5 text-destructive" />
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                <X className="w-5 h-5 text-destructive" />
+              </motion.div>
             )}
           </div>
         </div>
@@ -106,9 +130,9 @@ const DisplayNameStep = ({ value, onChange, onNext, onBack }: DisplayNameStepPro
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 text-xs text-destructive"
+            className="flex items-center gap-2 text-xs text-destructive p-3 border border-destructive/30 bg-destructive/5"
           >
-            <AlertCircle className="w-4 h-4" />
+            <AlertCircle className="w-4 h-4 shrink-0" />
             {error}
           </motion.div>
         )}
@@ -117,7 +141,7 @@ const DisplayNameStep = ({ value, onChange, onNext, onBack }: DisplayNameStepPro
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-destructive"
+            className="text-xs text-destructive p-3 border border-destructive/30 bg-destructive/5"
           >
             This display name is already taken
           </motion.p>
@@ -127,34 +151,42 @@ const DisplayNameStep = ({ value, onChange, onNext, onBack }: DisplayNameStepPro
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-xs text-primary"
+            className="text-xs text-primary p-3 border border-primary/30 bg-primary/5"
           >
             ✓ This name is available!
           </motion.p>
         )}
 
-        <div className="space-y-2 text-xs text-muted-foreground">
-          <p className="font-mono uppercase tracking-wider">Requirements:</p>
-          <ul className="space-y-1 ml-4">
-            <li className={value.length >= 3 ? "text-primary" : ""}>
-              ✓ At least 3 characters
+        <div className="space-y-3 p-4 border border-border bg-muted/20">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground">Requirements:</p>
+          <ul className="space-y-2 text-xs">
+            <li className={`flex items-center gap-2 transition-colors ${value.length >= 3 ? "text-primary" : "text-muted-foreground"}`}>
+              <span className="w-1 h-1 bg-current"></span>
+              At least 3 characters
             </li>
-            <li className={value.length <= 30 ? "text-primary" : ""}>
-              ✓ Maximum 30 characters
+            <li className={`flex items-center gap-2 transition-colors ${value.length <= 30 ? "text-primary" : "text-muted-foreground"}`}>
+              <span className="w-1 h-1 bg-current"></span>
+              Maximum 30 characters
             </li>
-            <li className={/^[a-zA-Z0-9_]*$/.test(value) ? "text-primary" : ""}>
-              ✓ Letters, numbers, underscores only
+            <li className={`flex items-center gap-2 transition-colors ${/^[a-zA-Z0-9_]*$/.test(value) ? "text-primary" : "text-muted-foreground"}`}>
+              <span className="w-1 h-1 bg-current"></span>
+              Letters, numbers, underscores only
             </li>
           </ul>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="flex gap-3 justify-center">
+      <motion.div 
+        className="flex gap-3 justify-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         <Button
           onClick={onBack}
           variant="outline"
           size="lg"
-          className="px-6"
+          className="px-8 font-display uppercase tracking-[0.12em] text-xs"
         >
           Back
         </Button>
@@ -162,11 +194,11 @@ const DisplayNameStep = ({ value, onChange, onNext, onBack }: DisplayNameStepPro
           onClick={onNext}
           disabled={!canProceed}
           size="lg"
-          className="px-8"
+          className="px-10 font-display uppercase tracking-[0.12em] text-xs disabled:opacity-30"
         >
           Continue
         </Button>
-      </div>
+      </motion.div>
     </div>
   );
 };

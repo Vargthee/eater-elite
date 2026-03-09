@@ -203,41 +203,69 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+      {/* Ambient gradient background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+      </div>
+
       {/* Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-border z-50">
+      <div className="fixed top-0 left-0 right-0 h-[2px] bg-border z-50">
         <motion.div
-          className="h-full bg-primary"
+          className="h-full bg-gradient-to-r from-primary via-accent to-primary"
           initial={{ width: 0 }}
           animate={{ width: `${((currentStep + 1) / TOTAL_STEPS) * 100}%` }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         />
       </div>
 
       {/* Step Indicators */}
-      <div className="container max-w-2xl mx-auto px-4 pt-8 pb-4">
+      <div className="relative z-10 container max-w-3xl mx-auto px-4 pt-10 pb-6">
         <div className="flex items-center justify-between">
           {[...Array(TOTAL_STEPS)].map((_, i) => (
             <div key={i} className="flex items-center">
               <motion.div
-                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-mono ${
+                className={`relative w-9 h-9 border-2 flex items-center justify-center text-xs font-mono ${
                   i < currentStep
-                    ? "bg-primary border-primary text-primary-foreground"
+                    ? "bg-primary border-primary text-primary-foreground shadow-[0_0_15px_hsl(var(--primary)/0.3)]"
                     : i === currentStep
-                    ? "border-primary text-primary"
-                    : "border-border text-muted-foreground"
+                    ? "border-primary text-primary bg-primary/5"
+                    : "border-border text-muted-foreground bg-background"
                 }`}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: i * 0.05, type: "spring", stiffness: 300 }}
+                whileHover={i <= currentStep ? { scale: 1.1 } : {}}
               >
-                {i < currentStep ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
+                {i < currentStep ? (
+                  <motion.div
+                    initial={{ scale: 0, rotate: -90 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <CheckCircle2 className="w-5 h-5" />
+                  </motion.div>
+                ) : (
+                  i + 1
+                )}
+                {i === currentStep && (
+                  <motion.div
+                    className="absolute inset-0 border border-primary"
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                )}
               </motion.div>
               {i < TOTAL_STEPS - 1 && (
-                <div
-                  className={`w-8 sm:w-12 h-[2px] mx-1 ${
+                <motion.div
+                  className={`w-10 sm:w-16 h-[2px] mx-1 ${
                     i < currentStep ? "bg-primary" : "bg-border"
                   }`}
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: i * 0.05 + 0.1 }}
+                  style={{ transformOrigin: "left" }}
                 />
               )}
             </div>
@@ -246,15 +274,15 @@ const Onboarding = () => {
       </div>
 
       {/* Step Content */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="w-full max-w-2xl"
+            initial={{ opacity: 0, x: 40, filter: "blur(4px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, x: -40, filter: "blur(4px)" }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-3xl"
           >
             {renderStep()}
           </motion.div>
