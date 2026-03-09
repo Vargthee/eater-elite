@@ -266,9 +266,15 @@ const Index = () => {
             )}
           </motion.div>
 
-          {filteredProfiles.length > 0 ? (
+          {isLoading ? (
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredProfiles.map((profile, i) => (
+              {[...Array(6)].map((_, i) => (
+                <ProfileCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : profiles.length > 0 ? (
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {profiles.map((profile, i) => (
                 <ProfileCard key={profile.id} profile={profile} rank={i + 1} index={i} />
               ))}
             </div>
@@ -279,20 +285,30 @@ const Index = () => {
               transition={{ duration: 0.5 }}
               className="flex flex-col items-center justify-center py-20 text-center"
             >
-              <p className="text-muted-foreground text-sm mb-4">No eaters found matching your search.</p>
+              <p className="text-muted-foreground text-sm mb-4">
+                {searchQuery || selectedCity 
+                  ? "No eaters found matching your search." 
+                  : "No profiles yet. Be the first to create one!"}
+              </p>
               <p className="text-xs text-muted-foreground mb-6">
-                Try adjusting your search terms or clearing the filters.
+                {searchQuery || selectedCity 
+                  ? "Try adjusting your search terms or clearing the filters."
+                  : "Click the button below to get started."}
               </p>
               <motion.button
                 onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCity(undefined);
+                  if (searchQuery || selectedCity) {
+                    setSearchQuery("");
+                    setSelectedCity(undefined);
+                  } else {
+                    handleCreateProfile();
+                  }
                 }}
                 className="px-4 py-2 border border-border text-foreground text-xs font-mono uppercase tracking-wider hover:border-primary hover:text-primary transition-colors"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
-                Clear All Filters
+                {searchQuery || selectedCity ? "Clear All Filters" : "Create Profile"}
               </motion.button>
             </motion.div>
           )}
