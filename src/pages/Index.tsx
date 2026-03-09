@@ -42,21 +42,44 @@ const Index = () => {
     setCreating(true);
     try {
       let userId = user?.id;
+      
+      // Sign in anonymously if not already authenticated
       if (!userId) {
         await signInAnonymously();
         const { data: { session } } = await supabase.auth.getSession();
         userId = session?.user?.id;
       }
+      
       if (!userId) throw new Error("Could not authenticate");
+      
+      // Small delay to ensure session is established
       await new Promise((r) => setTimeout(r, 500));
-      const { data: profile } = await supabase.from("profiles").select("id").eq("user_id", userId).maybeSingle();
+      
+      // Check if user already has a profile
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id, is_anonymous")
+        .eq("user_id", userId)
+        .maybeSingle();
+      
       if (profile) {
-        navigate(`/profile/${profile.id}`);
+        // If profile exists and is still anonymous, redirect to onboarding
+        if (profile.is_anonymous) {
+          navigate("/onboarding");
+        } else {
+          // Profile is complete, go to profile page
+          navigate(`/profile/${profile.id}`);
+        }
       } else {
-        toast({ title: "Error", description: "Profile not found. Try again.", variant: "destructive" });
+        // No profile found, redirect to onboarding
+        navigate("/onboarding");
       }
     } catch (e: any) {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ 
+        title: "Error", 
+        description: e.message, 
+        variant: "destructive" 
+      });
     }
     setCreating(false);
   }, [user, signInAnonymously, navigate, toast]);
