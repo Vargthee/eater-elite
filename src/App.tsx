@@ -23,10 +23,12 @@ const prefetchRoutes = () => {
     import("./pages/Auth");
     import("./pages/Profile");
     import("./pages/Heatmap");
+    import("./pages/Onboarding");
   }) ?? setTimeout(() => {
     import("./pages/Auth");
     import("./pages/Profile");
     import("./pages/Heatmap");
+    import("./pages/Onboarding");
   }, 2000);
 };
 
