@@ -100,6 +100,9 @@ const ZoneDetailPanel = forwardRef<HTMLDivElement, Props>(({ zone, onClose }, re
       </motion.div>
     )}
   </AnimatePresence>
-);
+  </div>
+));
+
+ZoneDetailPanel.displayName = "ZoneDetailPanel";
 
 export default ZoneDetailPanel;
