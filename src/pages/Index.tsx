@@ -4,11 +4,11 @@ import { Shield, TrendingUp, MapPin, Users, LogOut, Loader as Loader2, ArrowUpRi
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import ProfileCard from "@/components/ProfileCard";
-import { dummyProfiles } from "@/data/dummyProfiles";
+import ProfileCardSkeleton from "@/components/ProfileCardSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { filterProfiles } from "@/lib/utils";
+import { useProfiles } from "@/hooks/useProfiles";
 
 const nigerianCities = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Benin City", "Enugu"];
 
