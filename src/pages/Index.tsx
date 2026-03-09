@@ -124,22 +124,23 @@ const Index = () => {
           >
             <motion.p
               variants={fadeUp}
-              className="font-mono text-xs uppercase tracking-[0.3em] text-primary mb-4 sm:mb-6"
+              className="font-mono text-xs uppercase tracking-[0.35em] text-primary mb-4 sm:mb-6 flex items-center gap-2"
             >
+              <span className="inline-block w-8 h-[1px] bg-primary/40"></span>
               Anonymous Rating Platform — Naija Edition
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="font-display font-extrabold text-3xl sm:text-6xl md:text-7xl leading-[0.9] mb-4 sm:mb-6"
+              className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.88] mb-5 sm:mb-7 tracking-[-0.04em]"
             >
               Discover who<br />
               <span className="text-gradient">dey chop well</span>
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="text-muted-foreground text-sm sm:text-lg max-w-xl leading-relaxed mb-8 sm:mb-12"
+              className="text-muted-foreground text-sm sm:text-lg max-w-xl leading-relaxed mb-8 sm:mb-12 font-body tracking-[-0.01em]"
             >
-              Anonymous reviews. Real ratings. Technique, Stamina & Vibe — all scored. Your identity stays hidden. No wahala. 🇳🇬
+              Anonymous reviews. Real ratings. <span className="text-primary/80 font-medium">Technique, Stamina & Vibe</span> — all scored. Your identity stays hidden. No wahala. 🇳🇬
             </motion.p>
           </motion.div>
 
@@ -314,15 +315,21 @@ const Index = () => {
             <motion.button
               onClick={handleCreateProfile}
               disabled={creating}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-display font-bold text-sm uppercase tracking-wider hover:opacity-90 transition-opacity glow-primary disabled:opacity-50 shrink-0"
-              whileHover={{ scale: 1.04, y: -2 }}
+              className="group inline-flex items-center gap-2.5 px-7 py-3.5 bg-primary text-primary-foreground font-display font-bold text-sm uppercase tracking-[0.08em] hover:opacity-90 transition-all duration-400 glow-primary disabled:opacity-50 shrink-0 border border-primary/20 relative overflow-hidden"
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.97 }}
             >
-              {creating && <Loader2 className="w-4 h-4 animate-spin" />}
-              {user ? "View Profile" : "Create Profile"}
+              <motion.span 
+                className="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/10 to-accent/0"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              />
+              {creating && <Loader2 className="w-4 h-4 animate-spin relative z-10" />}
+              <span className="relative z-10">{user ? "View Profile" : "Create Profile"}</span>
               <motion.span
-                animate={{ x: [0, 3, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                className="relative z-10"
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
               >
                 <ArrowUpRight className="w-4 h-4" />
               </motion.span>

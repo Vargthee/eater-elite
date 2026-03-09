@@ -103,13 +103,33 @@
 
   .glass-hover:hover {
     background: hsla(160 18% 11% / 0.95);
-    border-color: hsla(165 75% 42% / 0.25);
-    box-shadow: 0 0 0 1px hsla(165 75% 42% / 0.15), 0 20px 50px -12px hsla(160 20% 10% / 0.6), 0 0 40px -10px hsla(45 85% 58% / 0.1);
+    border-color: hsla(165 75% 42% / 0.3);
+    box-shadow: 0 0 0 1px hsla(165 75% 42% / 0.2), 
+                0 20px 50px -12px hsla(160 20% 10% / 0.7), 
+                0 0 40px -10px hsla(45 85% 58% / 0.15),
+                inset 0 1px 0 hsla(165 75% 85% / 0.08);
     transform: translateY(-2px);
   }
 
+  .glass-premium {
+    background: hsla(160 18% 9% / 0.9);
+    border: 1px solid hsla(165 75% 42% / 0.25);
+    box-shadow: 0 0 0 1px hsla(165 75% 42% / 0.1), 
+                0 10px 40px -10px hsla(160 20% 10% / 0.5),
+                inset 0 1px 0 hsla(165 75% 85% / 0.05);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  }
+
   .text-gradient {
-    background: linear-gradient(135deg, hsl(165 75% 42%), hsl(45 85% 58%));
+    background: linear-gradient(135deg, hsl(165 75% 42%), hsl(165 85% 50%), hsl(45 85% 58%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(45 85% 58%), hsl(38 90% 62%), hsl(30 85% 55%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -119,9 +139,18 @@
     box-shadow: 0 0 30px hsla(165 75% 42% / 0.25), 0 0 80px hsla(165 75% 42% / 0.08), 0 0 100px hsla(45 85% 58% / 0.05);
   }
 
+  .glow-gold {
+    box-shadow: 0 0 25px hsla(45 85% 58% / 0.3), 0 0 60px hsla(45 85% 58% / 0.12), 0 0 90px hsla(165 75% 42% / 0.06);
+  }
+
   .border-glow {
     border-color: hsla(165 75% 42% / 0.4);
     box-shadow: 0 0 20px hsla(165 75% 42% / 0.15), 0 0 40px hsla(45 85% 58% / 0.08);
+  }
+
+  .border-glow-gold {
+    border-color: hsla(45 85% 58% / 0.35);
+    box-shadow: 0 0 18px hsla(45 85% 58% / 0.2), 0 0 35px hsla(165 75% 42% / 0.08), inset 0 1px 0 hsla(45 85% 58% / 0.15);
   }
 
   .mono {

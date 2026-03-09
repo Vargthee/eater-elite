@@ -35,12 +35,16 @@ const ProfileCard = memo(({ profile, rank, index = 0 }: ProfileCardProps) => {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -4, transition: { duration: 0.3, ease: "easeOut" } }}
-      className="group relative border border-border bg-card p-5 flex flex-col gap-4 overflow-hidden transition-colors duration-500 hover:border-primary/30 hover:bg-card/80"
+      className="group relative border border-border bg-card p-5 flex flex-col gap-4 overflow-hidden transition-all duration-500 hover:border-primary/40 hover:bg-card/80 hover:shadow-[0_0_0_1px_hsl(165_75%_42%/0.15),0_20px_40px_-10px_hsl(160_20%_10%/0.5)]"
     >
       {/* Hover glow overlay */}
       <motion.div
         className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.06), transparent 70%)" }}
+        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.08), transparent 70%)" }}
+      />
+      <motion.div
+        className="absolute top-0 right-0 w-32 h-32 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+        style={{ background: "radial-gradient(circle at center, hsl(var(--accent) / 0.06), transparent 70%)" }}
       />
 
       {/* Header */}
@@ -70,17 +74,17 @@ const ProfileCard = memo(({ profile, rank, index = 0 }: ProfileCardProps) => {
         </motion.div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <h3 className="font-display font-bold text-sm truncate">{profile.displayName}</h3>
+            <h3 className="font-display font-bold text-sm truncate tracking-tight">{profile.displayName}</h3>
             {profile.verified && (
               <motion.span
                 animate={{ rotate: [0, -8, 8, 0] }}
                 transition={{ delay: index * 0.08 + 0.5, duration: 0.5, ease: "easeInOut" }}
               >
-                <BadgeCheck className="w-4 h-4 text-primary shrink-0" />
+                <BadgeCheck className="w-4 h-4 text-accent shrink-0" />
               </motion.span>
             )}
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{profile.city}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">{profile.city}</p>
         </div>
         <div className="text-right shrink-0">
           <motion.span
@@ -120,16 +124,22 @@ const ProfileCard = memo(({ profile, rank, index = 0 }: ProfileCardProps) => {
       <div className="relative grid grid-cols-3 gap-3">
         {Object.entries(profile.metrics).map(([key, value]) => (
           <div key={key}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">{key}</span>
-              <span className="font-mono text-[10px] text-foreground">{value.toFixed(1)}</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{key}</span>
+              <span className="font-mono text-[10px] text-foreground font-medium">{value.toFixed(1)}</span>
             </div>
-            <div className="h-px bg-secondary overflow-hidden">
+            <div className="h-1 bg-muted/20 overflow-hidden relative">
               <motion.div
-                className="h-full bg-primary"
+                className="h-full absolute inset-0"
+                style={{ 
+                  background: key === 'vibe' 
+                    ? 'linear-gradient(90deg, hsl(45 85% 58%), hsl(38 90% 62%))' 
+                    : 'linear-gradient(90deg, hsl(165 75% 42%), hsl(165 85% 50%))',
+                  boxShadow: key === 'vibe' ? '0 0 8px hsl(45 85% 58% / 0.4)' : '0 0 8px hsl(165 75% 42% / 0.3)'
+                }}
                 initial={{ width: 0 }}
                 animate={{ width: `${(value / 5) * 100}%` }}
-                transition={{ delay: index * 0.08 + 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ delay: index * 0.08 + 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
           </div>
