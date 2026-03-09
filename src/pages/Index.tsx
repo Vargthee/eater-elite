@@ -237,9 +237,11 @@ const Index = () => {
                 {searchQuery || selectedCity ? "Search Results" : "Leaderboard"}
               </p>
               <h2 className="font-display font-extrabold text-xl sm:text-4xl leading-tight">
-                {searchQuery || selectedCity ? (
+                {isLoading ? (
+                  "Loading..."
+                ) : searchQuery || selectedCity ? (
                   <>
-                    {filteredProfiles.length} {filteredProfiles.length === 1 ? "Match" : "Matches"} Found
+                    {profiles.length} {profiles.length === 1 ? "Match" : "Matches"} Found
                   </>
                 ) : (
                   <>
