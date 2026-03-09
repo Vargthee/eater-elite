@@ -160,7 +160,7 @@
   .tag {
     @apply inline-flex items-center px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest border;
     color: hsl(var(--primary));
-    border-color: hsla(72 100% 50% / 0.2);
-    background: hsla(72 100% 50% / 0.05);
+    border-color: hsla(165 75% 42% / 0.25);
+    background: linear-gradient(135deg, hsla(165 75% 42% / 0.08), hsla(45 85% 58% / 0.03));
   }
 }
