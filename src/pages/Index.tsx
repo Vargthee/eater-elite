@@ -30,12 +30,6 @@ const Index = () => {
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const { scrollYProgress } = useScroll();
   const navBorder = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
-  
-  // Parallax transforms for hero section depth
-  const heroY1 = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
-  const heroY2 = useTransform(scrollYProgress, [0, 0.3], [0, -50]);
-  const heroY3 = useTransform(scrollYProgress, [0, 0.3], [0, -30]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.3]);
 
   const filteredProfiles = filterProfiles(dummyProfiles, searchQuery, selectedCity);
 
@@ -120,14 +114,13 @@ const Index = () => {
       </motion.nav>
 
       {/* Hero */}
-      <section className="pt-28 sm:pt-40 pb-10 sm:pb-20 px-4 relative overflow-hidden">
+      <section className="pt-28 sm:pt-40 pb-10 sm:pb-20 px-4">
         <div className="container max-w-5xl mx-auto">
           <motion.div
             className="max-w-3xl"
             variants={stagger}
             initial="initial"
             animate="animate"
-            style={{ y: heroY1, opacity: heroOpacity }}
           >
             <motion.p
               variants={fadeUp}
@@ -139,7 +132,6 @@ const Index = () => {
             <motion.h1
               variants={fadeUp}
               className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.88] mb-5 sm:mb-7 tracking-[-0.04em]"
-              style={{ y: heroY2 }}
             >
               Discover who<br />
               <span className="text-gradient">dey chop well</span>
@@ -147,7 +139,6 @@ const Index = () => {
             <motion.p
               variants={fadeUp}
               className="text-muted-foreground text-sm sm:text-lg max-w-xl leading-relaxed mb-8 sm:mb-12 font-body tracking-[-0.01em]"
-              style={{ y: heroY1 }}
             >
               Anonymous reviews. Real ratings. <span className="text-primary/80 font-medium">Technique, Stamina & Vibe</span> — all scored. Your identity stays hidden. No wahala. 🇳🇬
             </motion.p>
@@ -158,7 +149,6 @@ const Index = () => {
             animate={{ opacity: 1, y: 0, scaleX: 1 }}
             transition={{ delay: 0.4, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-2xl origin-left"
-            style={{ y: heroY3 }}
           >
             <SearchBar onSearch={setSearchQuery} />
           </motion.div>
@@ -169,7 +159,6 @@ const Index = () => {
             initial="initial"
             animate="animate"
             variants={{ animate: { transition: { staggerChildren: 0.05, delayChildren: 0.5 } } }}
-            style={{ y: heroY3 }}
           >
             {nigerianCities.map((city) => (
               <motion.button
@@ -196,7 +185,6 @@ const Index = () => {
             initial="initial"
             animate="animate"
             variants={{ animate: { transition: { staggerChildren: 0.1, delayChildren: 0.7 } } }}
-            style={{ y: heroY2 }}
           >
             {[
               { icon: Shield, label: "100% Anonymous", color: "text-primary" },
