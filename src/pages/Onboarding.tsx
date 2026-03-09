@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import DisplayNameStep from "@/components/onboarding/DisplayNameStep";
 import BioStep from "@/components/onboarding/BioStep";
@@ -210,8 +211,24 @@ const Onboarding = () => {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
       </div>
 
+      {/* Nav */}
+      <nav className="fixed top-0 inset-x-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
+        <div className="container flex items-center justify-between h-14 px-4">
+          <Link to="/" className="font-display font-extrabold text-lg tracking-tight">
+            RATE<span className="text-primary">EATERS</span>
+          </Link>
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Home
+          </Link>
+        </div>
+      </nav>
+
       {/* Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 h-[2px] bg-border z-50">
+      <div className="fixed top-14 left-0 right-0 h-[2px] bg-border z-40">
         <motion.div
           className="h-full bg-gradient-to-r from-primary via-accent to-primary"
           initial={{ width: 0 }}
@@ -221,7 +238,7 @@ const Onboarding = () => {
       </div>
 
       {/* Step Indicators */}
-      <div className="relative z-10 container max-w-3xl mx-auto px-4 pt-10 pb-6">
+      <div className="relative z-10 container max-w-3xl mx-auto px-4 pt-20 pb-6">
         <div className="flex items-center justify-between">
           {[...Array(TOTAL_STEPS)].map((_, i) => (
             <div key={i} className="flex items-center">

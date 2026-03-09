@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { UserCircle, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { UserCircle, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
@@ -48,19 +48,32 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 noise">
+    <div className="min-h-screen bg-background flex flex-col noise">
+      {/* Nav */}
+      <nav className="fixed top-0 inset-x-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
+        <div className="container flex items-center justify-between h-14 px-4">
+          <Link to="/" className="font-display font-extrabold text-lg tracking-tight">
+            RATE<span className="text-primary">EATERS</span>
+          </Link>
+          <motion.div whileHover={{ x: -2 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Home
+            </Link>
+          </motion.div>
+        </div>
+      </nav>
+
+      <div className="flex-1 flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md"
       >
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-10">
-          <span className="font-display font-extrabold text-2xl tracking-tight">
-            RATE<span className="text-primary">EATERS</span>
-          </span>
-        </div>
 
         {/* Card */}
         <div className="border border-border p-6 sm:p-8">
@@ -149,6 +162,7 @@ const Auth = () => {
           Your identity stays anonymous. Always. 🇳🇬
         </p>
       </motion.div>
+      </div>
     </div>
   );
 };
