@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Flame, Star, Users } from "lucide-react";
 import type { HeatZone } from "@/data/lagosZones";
@@ -7,7 +8,8 @@ interface Props {
   onClose: () => void;
 }
 
-const ZoneDetailPanel = ({ zone, onClose }: Props) => (
+const ZoneDetailPanel = forwardRef<HTMLDivElement, Props>(({ zone, onClose }, ref) => (
+  <div ref={ref}>
   <AnimatePresence>
     {zone && (
       <motion.div
@@ -98,6 +100,9 @@ const ZoneDetailPanel = ({ zone, onClose }: Props) => (
       </motion.div>
     )}
   </AnimatePresence>
-);
+  </div>
+));
+
+ZoneDetailPanel.displayName = "ZoneDetailPanel";
 
 export default ZoneDetailPanel;
