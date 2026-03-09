@@ -138,21 +138,21 @@
   }
 
   .glow-primary {
-    box-shadow: 0 0 30px hsla(165 75% 42% / 0.25), 0 0 80px hsla(165 75% 42% / 0.08), 0 0 100px hsla(45 85% 58% / 0.05);
+    box-shadow: 0 0 40px hsla(165 85% 45% / 0.35), 0 0 90px hsla(165 85% 45% / 0.15), 0 0 120px hsla(45 95% 60% / 0.08);
   }
 
   .glow-gold {
-    box-shadow: 0 0 25px hsla(45 85% 58% / 0.3), 0 0 60px hsla(45 85% 58% / 0.12), 0 0 90px hsla(165 75% 42% / 0.06);
+    box-shadow: 0 0 35px hsla(45 95% 60% / 0.4), 0 0 70px hsla(45 95% 60% / 0.18), 0 0 100px hsla(165 85% 45% / 0.1);
   }
 
   .border-glow {
-    border-color: hsla(165 75% 42% / 0.4);
-    box-shadow: 0 0 20px hsla(165 75% 42% / 0.15), 0 0 40px hsla(45 85% 58% / 0.08);
+    border-color: hsla(165 85% 45% / 0.5);
+    box-shadow: 0 0 24px hsla(165 85% 45% / 0.2), 0 0 48px hsla(45 95% 60% / 0.12);
   }
 
   .border-glow-gold {
-    border-color: hsla(45 85% 58% / 0.35);
-    box-shadow: 0 0 18px hsla(45 85% 58% / 0.2), 0 0 35px hsla(165 75% 42% / 0.08), inset 0 1px 0 hsla(45 85% 58% / 0.15);
+    border-color: hsla(45 95% 60% / 0.45);
+    box-shadow: 0 0 22px hsla(45 95% 60% / 0.28), 0 0 42px hsla(165 85% 45% / 0.12), inset 0 1px 0 hsla(45 95% 60% / 0.18);
   }
 
   .mono {
