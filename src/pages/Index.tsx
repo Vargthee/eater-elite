@@ -4,11 +4,11 @@ import { Shield, TrendingUp, MapPin, Users, LogOut, Loader as Loader2, ArrowUpRi
 import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "@/components/SearchBar";
 import ProfileCard from "@/components/ProfileCard";
-import { dummyProfiles } from "@/data/dummyProfiles";
+import ProfileCardSkeleton from "@/components/ProfileCardSkeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { filterProfiles } from "@/lib/utils";
+import { useProfiles } from "@/hooks/useProfiles";
 
 const nigerianCities = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Benin City", "Enugu"];
 
@@ -31,7 +31,12 @@ const Index = () => {
   const { scrollYProgress } = useScroll();
   const navBorder = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
 
-  const filteredProfiles = filterProfiles(dummyProfiles, searchQuery, selectedCity);
+  // Fetch real profiles from database
+  const { data: profiles = [], isLoading } = useProfiles({
+    searchQuery,
+    city: selectedCity,
+    limit: 50,
+  });
 
   const handleCreateProfile = useCallback(async () => {
     setCreating(true);
@@ -232,9 +237,11 @@ const Index = () => {
                 {searchQuery || selectedCity ? "Search Results" : "Leaderboard"}
               </p>
               <h2 className="font-display font-extrabold text-xl sm:text-4xl leading-tight">
-                {searchQuery || selectedCity ? (
+                {isLoading ? (
+                  "Loading..."
+                ) : searchQuery || selectedCity ? (
                   <>
-                    {filteredProfiles.length} {filteredProfiles.length === 1 ? "Match" : "Matches"} Found
+                    {profiles.length} {profiles.length === 1 ? "Match" : "Matches"} Found
                   </>
                 ) : (
                   <>
@@ -259,9 +266,15 @@ const Index = () => {
             )}
           </motion.div>
 
-          {filteredProfiles.length > 0 ? (
+          {isLoading ? (
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredProfiles.map((profile, i) => (
+              {[...Array(6)].map((_, i) => (
+                <ProfileCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : profiles.length > 0 ? (
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {profiles.map((profile, i) => (
                 <ProfileCard key={profile.id} profile={profile} rank={i + 1} index={i} />
               ))}
             </div>
@@ -272,20 +285,30 @@ const Index = () => {
               transition={{ duration: 0.5 }}
               className="flex flex-col items-center justify-center py-20 text-center"
             >
-              <p className="text-muted-foreground text-sm mb-4">No eaters found matching your search.</p>
+              <p className="text-muted-foreground text-sm mb-4">
+                {searchQuery || selectedCity 
+                  ? "No eaters found matching your search." 
+                  : "No profiles yet. Be the first to create one!"}
+              </p>
               <p className="text-xs text-muted-foreground mb-6">
-                Try adjusting your search terms or clearing the filters.
+                {searchQuery || selectedCity 
+                  ? "Try adjusting your search terms or clearing the filters."
+                  : "Click the button below to get started."}
               </p>
               <motion.button
                 onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCity(undefined);
+                  if (searchQuery || selectedCity) {
+                    setSearchQuery("");
+                    setSelectedCity(undefined);
+                  } else {
+                    handleCreateProfile();
+                  }
                 }}
                 className="px-4 py-2 border border-border text-foreground text-xs font-mono uppercase tracking-wider hover:border-primary hover:text-primary transition-colors"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
-                Clear All Filters
+                {searchQuery || selectedCity ? "Clear All Filters" : "Create Profile"}
               </motion.button>
             </motion.div>
           )}
