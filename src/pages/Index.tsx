@@ -124,22 +124,23 @@ const Index = () => {
           >
             <motion.p
               variants={fadeUp}
-              className="font-mono text-xs uppercase tracking-[0.3em] text-primary mb-4 sm:mb-6"
+              className="font-mono text-xs uppercase tracking-[0.35em] text-primary mb-4 sm:mb-6 flex items-center gap-2"
             >
+              <span className="inline-block w-8 h-[1px] bg-primary/40"></span>
               Anonymous Rating Platform — Naija Edition
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="font-display font-extrabold text-3xl sm:text-6xl md:text-7xl leading-[0.9] mb-4 sm:mb-6"
+              className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.88] mb-5 sm:mb-7 tracking-[-0.04em]"
             >
               Discover who<br />
               <span className="text-gradient">dey chop well</span>
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="text-muted-foreground text-sm sm:text-lg max-w-xl leading-relaxed mb-8 sm:mb-12"
+              className="text-muted-foreground text-sm sm:text-lg max-w-xl leading-relaxed mb-8 sm:mb-12 font-body tracking-[-0.01em]"
             >
-              Anonymous reviews. Real ratings. Technique, Stamina & Vibe — all scored. Your identity stays hidden. No wahala. 🇳🇬
+              Anonymous reviews. Real ratings. <span className="text-primary/80 font-medium">Technique, Stamina & Vibe</span> — all scored. Your identity stays hidden. No wahala. 🇳🇬
             </motion.p>
           </motion.div>
 
