@@ -103,15 +103,17 @@
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .glass-hover:hover {
-    background: hsla(0 0% 5% / 0.98);
-    border-color: hsla(165 85% 45% / 0.4);
-    box-shadow: 0 0 0 1px hsla(165 85% 45% / 0.25), 
-                0 24px 60px -16px hsla(0 0% 0% / 0.8), 
-                0 0 50px -12px hsla(165 85% 45% / 0.25),
-                0 0 80px -16px hsla(45 95% 60% / 0.15),
-                inset 0 1px 0 hsla(165 85% 85% / 0.06);
-    transform: translateY(-2px);
+  @media (hover: hover) and (pointer: fine) {
+    .glass-hover:hover {
+      background: hsla(0 0% 5% / 0.98);
+      border-color: hsla(165 85% 45% / 0.4);
+      box-shadow: 0 0 0 1px hsla(165 85% 45% / 0.25), 
+                  0 24px 60px -16px hsla(0 0% 0% / 0.8), 
+                  0 0 50px -12px hsla(165 85% 45% / 0.25),
+                  0 0 80px -16px hsla(45 95% 60% / 0.15),
+                  inset 0 1px 0 hsla(165 85% 85% / 0.06);
+      transform: translateY(-2px);
+    }
   }
 
   .glass-premium {
