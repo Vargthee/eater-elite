@@ -69,12 +69,14 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overscroll-behavior-y: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     letter-spacing: -0.01em;
-    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, h5, h6 {
