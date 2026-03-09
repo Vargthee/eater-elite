@@ -74,17 +74,17 @@ const ProfileCard = memo(({ profile, rank, index = 0 }: ProfileCardProps) => {
         </motion.div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <h3 className="font-display font-bold text-sm truncate">{profile.displayName}</h3>
+            <h3 className="font-display font-bold text-sm truncate tracking-tight">{profile.displayName}</h3>
             {profile.verified && (
               <motion.span
                 animate={{ rotate: [0, -8, 8, 0] }}
                 transition={{ delay: index * 0.08 + 0.5, duration: 0.5, ease: "easeInOut" }}
               >
-                <BadgeCheck className="w-4 h-4 text-primary shrink-0" />
+                <BadgeCheck className="w-4 h-4 text-accent shrink-0" />
               </motion.span>
             )}
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{profile.city}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">{profile.city}</p>
         </div>
         <div className="text-right shrink-0">
           <motion.span
