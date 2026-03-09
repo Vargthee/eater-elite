@@ -116,12 +116,12 @@
   }
 
   .glow-primary {
-    box-shadow: 0 0 30px hsla(72 100% 50% / 0.2), 0 0 80px hsla(72 100% 50% / 0.05);
+    box-shadow: 0 0 30px hsla(165 75% 42% / 0.25), 0 0 80px hsla(165 75% 42% / 0.08), 0 0 100px hsla(45 85% 58% / 0.05);
   }
 
   .border-glow {
-    border-color: hsla(72 100% 50% / 0.3);
-    box-shadow: 0 0 15px hsla(72 100% 50% / 0.1);
+    border-color: hsla(165 75% 42% / 0.4);
+    box-shadow: 0 0 20px hsla(165 75% 42% / 0.15), 0 0 40px hsla(45 85% 58% / 0.08);
   }
 
   .mono {
