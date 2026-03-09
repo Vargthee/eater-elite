@@ -102,9 +102,9 @@
   }
 
   .glass-hover:hover {
-    background: hsla(0 0% 8% / 0.9);
-    border-color: hsla(72 100% 50% / 0.15);
-    box-shadow: 0 0 0 1px hsla(72 100% 50% / 0.08), 0 20px 50px -12px hsla(0 0% 0% / 0.5);
+    background: hsla(160 18% 11% / 0.95);
+    border-color: hsla(165 75% 42% / 0.25);
+    box-shadow: 0 0 0 1px hsla(165 75% 42% / 0.15), 0 20px 50px -12px hsla(160 20% 10% / 0.6), 0 0 40px -10px hsla(45 85% 58% / 0.1);
     transform: translateY(-2px);
   }
 
