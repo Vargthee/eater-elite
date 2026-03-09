@@ -31,7 +31,12 @@ const Index = () => {
   const { scrollYProgress } = useScroll();
   const navBorder = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
 
-  const filteredProfiles = filterProfiles(dummyProfiles, searchQuery, selectedCity);
+  // Fetch real profiles from database
+  const { data: profiles = [], isLoading } = useProfiles({
+    searchQuery,
+    city: selectedCity,
+    limit: 50,
+  });
 
   const handleCreateProfile = useCallback(async () => {
     setCreating(true);
