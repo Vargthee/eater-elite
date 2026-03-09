@@ -124,16 +124,22 @@ const ProfileCard = memo(({ profile, rank, index = 0 }: ProfileCardProps) => {
       <div className="relative grid grid-cols-3 gap-3">
         {Object.entries(profile.metrics).map(([key, value]) => (
           <div key={key}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">{key}</span>
-              <span className="font-mono text-[10px] text-foreground">{value.toFixed(1)}</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground">{key}</span>
+              <span className="font-mono text-[10px] text-foreground font-medium">{value.toFixed(1)}</span>
             </div>
-            <div className="h-px bg-secondary overflow-hidden">
+            <div className="h-1 bg-muted/20 overflow-hidden relative">
               <motion.div
-                className="h-full bg-primary"
+                className="h-full absolute inset-0"
+                style={{ 
+                  background: key === 'vibe' 
+                    ? 'linear-gradient(90deg, hsl(45 85% 58%), hsl(38 90% 62%))' 
+                    : 'linear-gradient(90deg, hsl(165 75% 42%), hsl(165 85% 50%))',
+                  boxShadow: key === 'vibe' ? '0 0 8px hsl(45 85% 58% / 0.4)' : '0 0 8px hsl(165 75% 42% / 0.3)'
+                }}
                 initial={{ width: 0 }}
                 animate={{ width: `${(value / 5) * 100}%` }}
-                transition={{ delay: index * 0.08 + 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ delay: index * 0.08 + 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
           </div>

@@ -213,25 +213,39 @@ const Profile = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="border border-border p-5 sm:p-6 mt-4"
+          className="border border-border p-5 sm:p-7 mt-4"
         >
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-4">Detailed Ratings</p>
-          <div className="space-y-4">
-            {metricEntries.map(([label, value]) => (
-              <div key={label}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-sm font-medium">{label}</span>
-                  <span className="font-mono text-xs text-primary">{value > 0 ? value.toFixed(1) : "—"} / 5</span>
+          <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-primary mb-5 flex items-center gap-2">
+            <span className="inline-block w-6 h-[1px] bg-primary/30"></span>
+            Detailed Ratings
+          </p>
+          <div className="space-y-5">
+            {metricEntries.map(([label, value], idx) => (
+              <motion.div 
+                key={label}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + idx * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium tracking-tight">{label}</span>
+                  <span className="font-mono text-xs text-primary font-semibold">{value > 0 ? value.toFixed(1) : "—"} / 5</span>
                 </div>
-                <div className="h-px bg-secondary overflow-hidden">
+                <div className="h-1.5 bg-muted/20 overflow-hidden relative">
                   <motion.div
-                    className="h-full bg-primary"
+                    className="h-full absolute inset-0"
+                    style={{ 
+                      background: label === 'Vibe' 
+                        ? 'linear-gradient(90deg, hsl(45 85% 58%), hsl(38 90% 62%))' 
+                        : 'linear-gradient(90deg, hsl(165 75% 42%), hsl(165 85% 50%))',
+                      boxShadow: label === 'Vibe' ? '0 0 10px hsl(45 85% 58% / 0.35)' : '0 0 10px hsl(165 75% 42% / 0.3)'
+                    }}
                     initial={{ width: 0 }}
                     animate={{ width: `${(value / 5) * 100}%` }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 1, delay: 0.35 + idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
                   />
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
