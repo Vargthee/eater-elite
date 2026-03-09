@@ -169,6 +169,7 @@ const Index = () => {
             initial="initial"
             animate="animate"
             variants={{ animate: { transition: { staggerChildren: 0.05, delayChildren: 0.5 } } }}
+            style={{ y: heroY3 }}
           >
             {nigerianCities.map((city) => (
               <motion.button
@@ -195,6 +196,7 @@ const Index = () => {
             initial="initial"
             animate="animate"
             variants={{ animate: { transition: { staggerChildren: 0.1, delayChildren: 0.7 } } }}
+            style={{ y: heroY2 }}
           >
             {[
               { icon: Shield, label: "100% Anonymous", color: "text-primary" },
