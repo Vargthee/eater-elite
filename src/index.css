@@ -192,6 +192,16 @@
     90% { transform: translate(-10%, 10%); }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .noise::before {
+      animation: none;
+    }
+
+    .glass-hover {
+      transition: none;
+    }
+  }
+
   .line-accent {
     position: relative;
   }
