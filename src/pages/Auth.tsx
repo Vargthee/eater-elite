@@ -162,6 +162,7 @@ const Auth = () => {
           Your identity stays anonymous. Always. 🇳🇬
         </p>
       </motion.div>
+      </div>
     </div>
   );
 };

@@ -238,7 +238,7 @@ const Onboarding = () => {
       </div>
 
       {/* Step Indicators */}
-      <div className="relative z-10 container max-w-3xl mx-auto px-4 pt-10 pb-6">
+      <div className="relative z-10 container max-w-3xl mx-auto px-4 pt-20 pb-6">
         <div className="flex items-center justify-between">
           {[...Array(TOTAL_STEPS)].map((_, i) => (
             <div key={i} className="flex items-center">
