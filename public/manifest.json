@@ -1,0 +1,17 @@
+{
+  "name": "RateEaters",
+  "short_name": "RateEaters",
+  "description": "Anonymous Ratings for Nigeria's Top Eaters",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1512",
+  "theme_color": "#0d1512",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
